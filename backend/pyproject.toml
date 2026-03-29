@@ -1,0 +1,22 @@
+[project]
+name = "task-flow-backend"
+version = "0.1.0"
+description = "Backend for taskflow app"
+authors = [
+    {name = "Awaish-prog",email = "awaishk640@gmail.com"}
+]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.135.2",
+    "pydantic>=2.12.5",
+    "uvicorn[standard]>=0.24.0",
+
+    "sqlalchemy>=2.0.30",
+    "asyncpg>=0.29.0",
+    "alembic>=1.13.0"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
