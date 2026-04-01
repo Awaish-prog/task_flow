@@ -1,12 +1,29 @@
 import { Paper, Stack } from "@mui/material";
 import EditableField from "./ui/EditableField";
-import type { Card } from "../types/Types";
+import type { Card as CardType } from "../types/Types";
 import { useUpdateCard } from "../api/cards/query";
 
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-export default function Card({ id, boardId, card }: { id: number, boardId: number, card: Card}) {
-
+export default function Card({
+  id,
+  boardId,
+  card,
+}: {
+  id: number;
+  boardId: number;
+  card: CardType;
+}) {
   const updateCardMutation = useUpdateCard();
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   if (!card) return null;
 
@@ -15,7 +32,7 @@ export default function Card({ id, boardId, card }: { id: number, boardId: numbe
       id,
       name,
       boardId,
-      description: card.description
+      description: card.description,
     });
   };
 
@@ -24,22 +41,24 @@ export default function Card({ id, boardId, card }: { id: number, boardId: numbe
       id,
       description,
       boardId,
-      name: card.name
+      name: card.name,
     });
   };
 
   return (
-    <Paper sx={{ p: 2 }}>
+    <Paper
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      sx={{ p: 2 }}
+    >
       <Stack spacing={1}>
         <EditableField value={card.name} onSave={handleUpdateName} />
-
         <EditableField
           value={card.description}
           onSave={handleUpdateDescription}
         />
-
-        <Stack direction="row" justifyContent="flex-end">
-        </Stack>
       </Stack>
     </Paper>
   );
