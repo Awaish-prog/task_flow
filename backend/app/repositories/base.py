@@ -1,6 +1,9 @@
 from typing import Type, TypeVar, Generic, Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
+
+from app.models.boards import Board
 
 ModelType = TypeVar("ModelType")
 

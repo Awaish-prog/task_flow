@@ -1,22 +1,19 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import List
 from app.schemas.card_lists import CardList
 
 class BoardBase(BaseModel):
     id: int
     
-class BoardCreate(BaseModel):
+class BoardApi(BoardBase):
     name: str
-    card_list_id: int
-
 
 class BoardUpdate(BaseModel):
-    name: Optional[str] = None
-    card_list_id: Optional[int] = None
-
+    name: str = None
 
 class Board(BoardBase):
     name: str
-    card_list: CardList
+    card_lists: List[CardList] = []
     
     model_config = ConfigDict(from_attributes=True)
+    

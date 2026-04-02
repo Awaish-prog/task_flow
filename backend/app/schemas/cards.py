@@ -6,16 +6,19 @@ class CardBase(BaseModel):
     
 class CardCreate(BaseModel):
     name: str
-    description: str = Field(..., max_length=5)
+    description: str = None
+    card_list_id: int
 
 
 class CardUpdate(BaseModel):
     name: Optional[str] = None
-    description: Optional[str] = Field(..., max_length=5)
+    description: Optional[str] = None
+    card_list_id: Optional[int] = None
 
 
 class Card(CardBase):
     name: str
-    description: str = Field(..., max_length=5)
+    description: str = None
+    card_list_id: int
     
     model_config = ConfigDict(from_attributes=True)

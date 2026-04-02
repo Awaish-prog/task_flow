@@ -1,21 +1,26 @@
 from fastapi import APIRouter
 from typing import List
-from app.schemas.boards import Board, BoardCreate, BoardUpdate
+from app.schemas.boards import Board, BoardApi, BoardUpdate
+from app.api.dependencies import DBDep, BoardServiceDep
 
 router = APIRouter()
 
-@router.get("/", response_model=List[Board])
-def read_boards() -> List[Board]:
-    return []
+@router.get("/", response_model=List[BoardApi])
+async def read_boards(db: DBDep, board_service: BoardServiceDep) -> List[BoardApi]:
+    return await board_service.get_all(db)
 
 @router.get("/{board_id}", response_model=Board)
-def read_board() -> Board:
-    return None
+async def read_board(board_id: int, db: DBDep, board_service: BoardServiceDep) -> Board:
+    return await board_service.get(db, board_id)
 
-@router.post("/", response_model=Board)
-def create_board(board: BoardCreate) -> Board:
-    return None
+@router.post("/", response_model=BoardApi)
+async def create_board(board: BoardUpdate, db: DBDep, board_service: BoardServiceDep) -> BoardApi:
+    return await board_service.create(db, board)
 
 @router.put("/{board_id}", response_model=Board)
-def update_board(board: BoardUpdate) -> Board:
-    return None
+async def update_board(board_id: int, board: BoardUpdate, db: DBDep, board_service: BoardServiceDep) -> Board:
+    return await board_service.update(db, board_id, board)
+
+@router.delete("/{board_id}", response_model=bool)
+async def read_board(board_id: int, db: DBDep, board_service: BoardServiceDep) -> bool:
+    return await board_service.delete(db, board_id)
