@@ -9,6 +9,7 @@ class Card(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=True)
+    order_key = Column(String, nullable=False)
     card_list_id = Column(Integer, ForeignKey("card_lists.id"))
     
     card_list = relationship("CardList", back_populates="cards")

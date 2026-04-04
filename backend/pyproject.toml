@@ -5,7 +5,7 @@ description = "Backend for taskflow app"
 authors = [
     {name = "Awaish-prog",email = "awaishk640@gmail.com"}
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.10,<4"
 dependencies = [
     "fastapi>=0.135.2",
     "pydantic>=2.12.5",
@@ -13,7 +13,8 @@ dependencies = [
 
     "sqlalchemy>=2.0.30",
     "asyncpg>=0.29.0",
-    "alembic>=1.13.0"
+    "alembic>=1.13.0",
+    "fractional-indexing-jittered (>=0.2.0,<0.3.0)"
 ]
 
 

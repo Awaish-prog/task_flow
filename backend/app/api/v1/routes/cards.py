@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
-from app.schemas.cards import Card, CardCreate, CardUpdate
-from app.api.dependencies import DBDep, CardServiceDep
+from app.schemas.cards import Card, CardCreateRequest, CardUpdate, CardOrderUpdate
+from app.api.dependencies import DBDep, CardServiceDep, CardOrderServiceDep
 
 router = APIRouter()
 
@@ -14,11 +14,15 @@ async def read_card(card_id: int, db: DBDep, card_service: CardServiceDep) -> Ca
     return await card_service.get(db, card_id)
 
 @router.post("/", response_model=Card)
-async def create_card(card: CardCreate, db: DBDep, card_service: CardServiceDep) -> Card:
+async def create_card(card: CardCreateRequest, db: DBDep, card_service: CardOrderServiceDep) -> Card:
     return await card_service.create(db, card)
 
 @router.put("/{card_id}", response_model=Card)
 async def update_card(card_id: int, card: CardUpdate, db: DBDep, card_service: CardServiceDep) -> Card:
+    return await card_service.update(db, card_id, card)
+
+@router.patch("/move/{card_id}", response_model=Card)
+async def update_card_order(card_id: int, card: CardOrderUpdate, db: DBDep, card_service: CardOrderServiceDep) -> Card:
     return await card_service.update(db, card_id, card)
 
 @router.delete("/{card_id}", response_model=bool)

@@ -14,6 +14,14 @@ class BaseRepository(Generic[ModelType]):
     async def get(self, db: AsyncSession, id: int) -> Optional[ModelType]:
         result = await db.execute(select(self.model).where(self.model.id == id))
         return result.scalar_one_or_none()
+    
+    async def get_with_lock(self, db: AsyncSession, id: int) -> Optional[ModelType]:
+        result = await db.execute(
+            select(self.model)
+            .where(self.model.id == id)
+            .with_for_update()
+        )
+        return result.scalar_one_or_none()
 
     async def get_all(self, db: AsyncSession) -> List[ModelType]:
         result = await db.execute(select(self.model))

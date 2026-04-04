@@ -223,6 +223,18 @@ standard = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.8)", "htt
 standard-no-fastapi-cloud-cli = ["email-validator (>=2.0.0)", "fastapi-cli[standard-no-fastapi-cloud-cli] (>=0.0.8)", "httpx (>=0.23.0,<1.0.0)", "jinja2 (>=3.1.5)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.18)", "uvicorn[standard] (>=0.12.0)"]
 
 [[package]]
+name = "fractional-indexing-jittered"
+version = "0.2.0"
+description = "An implementation of fractional indexing with jitter"
+optional = false
+python-versions = "<4,>=3.7"
+groups = ["main"]
+files = [
+    {file = "fractional_indexing_jittered-0.2.0-py3-none-any.whl", hash = "sha256:f81791e9f790e7d03c51c1e5b6a74300e46ed05cea2be264943ac7d4eae6159a"},
+    {file = "fractional_indexing_jittered-0.2.0.tar.gz", hash = "sha256:e4310ccbc78474623782242e16a7d449633a514705e9f34c980f4da2a6a0e78a"},
+]
+
+[[package]]
 name = "greenlet"
 version = "3.3.2"
 description = "Lightweight in-process concurrent programming"
@@ -1236,5 +1248,5 @@ files = [
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.10"
-content-hash = "b70bfc3b4a2e46fecbdd4b99ad85278f5fd422129fd3e40bc2b399c88835aad6"
+python-versions = ">=3.10,<4"
+content-hash = "8026fce063d9987611102014ff0ab5c6448ea0b7a2291ce6bb7dce95c2fb2501"
