@@ -30,7 +30,10 @@ const EditableField = ({ value, onSave, variant = "h6" }: EditableFieldProps) =>
   ) : (
     <Stack direction="row" spacing={1} alignItems="center">
       <Typography variant={variant}>{fieldValue}</Typography>
-      <Button size="small" onClick={() => setIsEditing(true)}>
+      <Button size="small" onClick={() => {
+        console.log("edit called")
+        setIsEditing(true)
+      }}>
         Edit
       </Button>
     </Stack>

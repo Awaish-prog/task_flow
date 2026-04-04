@@ -47,20 +47,24 @@ export default function Board({ boardId }: { boardId: number }) {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    console.log("drag 1")
 
     if (!over) return;
 
     const activeId = Number(active.id);
     const overId = Number(over.id);
-
+    console.log("drag 2")
+    console.log(`${activeId}, ${overId}`);
     if (activeId === overId) return;
 
+    console.log("drag 3")
     queryClient.setQueryData(["board", boardId], (old: BoardData) => {
       if (!old) return old;
       return moveCard(old, activeId, overId);
     });
 
     // TODO: persist order to backend here
+    console.log(`${activeId}, ${overId}`);
   };
 
   const handleDragOver = (event: DragOverEvent) => {

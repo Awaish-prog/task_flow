@@ -5,6 +5,7 @@ import { useUpdateCard } from "../api/cards/query";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
 export default function Card({
   id,
@@ -50,10 +51,13 @@ export default function Card({
       ref={setNodeRef}
       style={style}
       {...attributes}
-      {...listeners}
       sx={{ p: 2 }}
     >
       <Stack spacing={1}>
+        <div {...listeners} style={{ cursor: "grab" }}>
+          <DragIndicatorIcon />
+        </div>
+
         <EditableField value={card.name} onSave={handleUpdateName} />
         <EditableField
           value={card.description}
