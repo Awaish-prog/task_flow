@@ -8,7 +8,7 @@ class CardOrderService(CardService):
         super().__init__()
         
     async def create(self, db: AsyncSession, obj_in: CardCreateRequest):
-        last_card = await self.repository.get_cards_in_list_desc(db, obj_in.card_list_id)
+        last_card = await self.repository.get_cards_in_desc(db)
 
         last_key = last_card.order_key if last_card else None
         key = generate_key_between(last_key, None)
@@ -41,6 +41,7 @@ class CardOrderService(CardService):
             next_key = next_card.order_key if is_next_in_same_list else None
             
             card.order_key = generate_jittered_key_between(prev_key, next_key)
+            print(f'prev: {prev_key}, next: {next_key}, new: {card.order_key}')
             card.card_list_id = obj_in.card_list_id
             await db.flush()
             return card

@@ -6,8 +6,13 @@ import type { CardListData } from "../types/Types";
 import { useUpdateCardList } from "../api/cardLists/query";
 import { useCreateCard } from "../api/cards/query";
 
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useDroppable } from "@dnd-kit/core";
+// import { Droppable } from "react-beautiful-dnd";
+
+import {
+  DragDropContext,
+  Droppable,
+  type DropResult,
+} from "@hello-pangea/dnd";
 
 export default function CardList({
   id,
@@ -24,8 +29,6 @@ export default function CardList({
   const [isAdding, setIsAdding] = useState(false);
   const [cardName, setCardName] = useState("");
   const [cardDescription, setCardDescription] = useState("");
-
-  const { setNodeRef } = useDroppable({ id: `list-${id}` });
 
   if (!cardList) return null;
 
@@ -54,18 +57,23 @@ export default function CardList({
   };
 
   return (
-    <Paper ref={setNodeRef} sx={{ width: 300, p: 2 }}>
+    <Paper sx={{ width: 300, p: 2 }}>
       <Stack spacing={2}>
         <EditableField value={cardList.name} onSave={handleSave} />
 
-        <SortableContext
-          items={cardList.cards.map((card) => card.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          {cardList.cards.map((card) => (
-            <Card key={card.id} id={card.id} boardId={boardId} card={card} />
+        <Droppable droppableId={cardList.id.toString()}>
+          {(provided: any) => (
+            <div
+            ref={provided.innerRef}
+              {...provided.droppableProps}>
+
+          {cardList.cards.map((card, index) => (
+            <Card key={card.id} id={card.id} boardId={boardId} card={card} index={index} />
           ))}
-        </SortableContext>
+        {provided.placeholder}
+        </div>
+          )}
+        </Droppable>
 
         {isAdding ? (
           <Stack spacing={1}>

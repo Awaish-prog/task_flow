@@ -5,21 +5,23 @@ import EditableField from "./ui/EditableField";
 import { useBoard, useUpdateBoard } from "../api/boards/query";
 import { useCreateCardList } from "../api/cardLists/query";
 
-import {
-  DndContext,
-  closestCorners,
-  type DragEndEvent,
-  type DragOverEvent,
-} from "@dnd-kit/core";
+// import { DragDropContext, type DropResult } from "react-beautiful-dnd";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { findListByCardId, moveCard } from "./ui/DndUtils";
 import type { BoardData, Card, CardListData } from "../types/Types";
+
+import {
+  DragDropContext,
+  Droppable,
+  type DropResult,
+} from "@hello-pangea/dnd";
+import { useMoveCard } from "../api/cards/query";
 
 export default function Board({ boardId }: { boardId: number }) {
   const { data: board, isLoading } = useBoard(boardId);
   const updateBoardMutation = useUpdateBoard();
   const createCardListMutation = useCreateCardList();
+  const moveCard = useMoveCard();
   const queryClient = useQueryClient();
 
   const [isAdding, setIsAdding] = useState(false);
@@ -45,79 +47,94 @@ export default function Board({ boardId }: { boardId: number }) {
     );
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    console.log("drag 1")
+//   const onDragEnd = (result: DropResult) => {
+//   const { source, destination } = result;
 
-    if (!over) return;
+//   if (!destination) return;
 
-    const activeId = Number(active.id);
-    const overId = Number(over.id);
-    console.log("drag 2")
-    console.log(`${activeId}, ${overId}`);
-    if (activeId === overId) return;
+//   // same position → do nothing
+//   if (
+//     source.droppableId === destination.droppableId &&
+//     source.index === destination.index
+//   ) {
+//     return;
+//   }
 
-    console.log("drag 3")
-    queryClient.setQueryData(["board", boardId], (old: BoardData) => {
-      if (!old) return old;
-      return moveCard(old, activeId, overId);
-    });
+//   const newLists = [...board.cardLists];
 
-    // TODO: persist order to backend here
-    console.log(`${activeId}, ${overId}`);
-  };
+//   const sourceList = newLists.find(
+//     (l) => l.id.toString() === source.droppableId
+//   );
 
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    if (!over) return;
+//   const destList = newLists.find(
+//     (l) => l.id.toString() === destination.droppableId
+//   );
 
-    const activeId = Number(active.id);
-    const overId = Number(over.id);
+//   if (!sourceList || !destList) return;
 
-    queryClient.setQueryData(["board", boardId], (old: BoardData) => {
-      if (!old) return old;
+//   const sourceCards = [...sourceList.cards];
+//   const [movedCard] = sourceCards.splice(source.index, 1);
 
-      const boardCopy = structuredClone(old);
+//   if (sourceList.id === destList.id) {
+//     // same list
+//     sourceCards.splice(destination.index, 0, movedCard);
+//     sourceList.cards = sourceCards;
+//   } else {
+//     // different list
+//     const destCards = [...destList.cards];
+//     destCards.splice(destination.index, 0, movedCard);
 
-      let activeList = findListByCardId(boardCopy, activeId);
-      let overList;
+//     sourceList.cards = sourceCards;
+//     destList.cards = destCards;
+//   }
 
-      if (String(over.id).startsWith("list-")) {
-        const listId = Number(String(over.id).replace("list-", ""));
-        overList = boardCopy.cardLists.find((cardList: CardListData) => cardList.id === listId);
-      } else {
-        overList = findListByCardId(boardCopy, overId);
+//   // 🔥 update cache manually
+//   queryClient.setQueryData(["board", boardId], {
+//     ...board,
+//     cardLists: newLists,
+//   });
+// };
+
+
+  const onDragEnd = (result: DropResult) => {
+    console.log(result)
+
+    const sourceCardListId: number = Number(result.source?.droppableId)
+    const destinationListId: number = Number(result.destination?.droppableId)
+
+    const destinationIndex = result.destination?.index
+    console.log(board)
+    const prevCardId: number | null = destinationIndex && destinationIndex > 0 ?
+      board.cardLists[destinationListId - 1].cards[destinationIndex - 1].id :
+      null
+    const nextCardId: number | null = destinationIndex != undefined && destinationIndex < board.cardLists[destinationListId - 1].cards.length ?
+      board.cardLists[destinationListId - 1].cards[destinationIndex].id :
+      null
+    console.log({
+      destinationIndex,
+      cardId: Number(result.draggableId),
+      cardListId: Number(result.destination?.droppableId),
+      prevCardId,
+      nextCardId,
+      sourceCardListId
+    })
+    moveCard.mutate(
+      {
+        cardId: Number(result.draggableId),
+        cardListId: Number(result.destination?.droppableId),
+        prevCardId,
+        nextCardId,
+        sourceCardListId,
+        boardId: boardId
       }
-
-      if (!activeList || !overList) return old;
-
-      if (activeList.id !== overList.id) {
-        const activeIndex = activeList.cards.findIndex(
-          (c: Card) => c.id === activeId
-        );
-
-        const overIndex =
-          overList.cards.findIndex((card: Card) => card.id === overId) >= 0
-            ? overList.cards.findIndex((card: Card) => card.id === overId)
-            : overList.cards.length;
-
-        const [moved] = activeList.cards.splice(activeIndex, 1);
-        overList.cards.splice(overIndex, 0, moved);
-      }
-
-      return boardCopy;
-    });
-  };
+    )
+  }
 
   return (
+    <DragDropContext onDragEnd={onDragEnd}>
     <Stack spacing={3}>
       <EditableField value={board.name} onSave={handleUpdateName} />
 
-      <DndContext
-        collisionDetection={closestCorners}
-        onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-      >
         <Box display="flex" gap={2} overflow="auto">
           {board.cardLists.map((cardList) => (
             <CardList
@@ -160,7 +177,7 @@ export default function Board({ boardId }: { boardId: number }) {
             )}
           </Box>
         </Box>
-      </DndContext>
     </Stack>
+    </DragDropContext>
   );
 }

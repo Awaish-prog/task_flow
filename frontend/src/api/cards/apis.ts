@@ -31,3 +31,7 @@ export const updateCard = (
 export const deleteCard = (id: number): Promise<void> => {
   return apiClient.delete(`${cardUrl}/${id}`);
 };
+
+export const moveCard = (id: number, prevCardId: number | null, nextCardId: number | null, cardListId: number): Promise<Card> => {
+  return apiClient.patch(`${cardUrl}/move/${id}`, { prevCardId, nextCardId, cardListId })
+}

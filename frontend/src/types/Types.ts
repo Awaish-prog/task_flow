@@ -3,6 +3,7 @@ export interface Card {
   name: string;
   description: string;
   cardListId: number
+  orderKey: string | null
 };
 
 export interface CardList {
