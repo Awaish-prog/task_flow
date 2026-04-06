@@ -1,4 +1,4 @@
-import { Stack, Box, Button, TextField } from "@mui/material";
+import { Stack, Box, Button, TextField, Paper } from "@mui/material";
 import { useState } from "react";
 import CardList from "./CardList";
 import EditableField from "./ui/EditableField";
@@ -135,27 +135,63 @@ export default function Board({ boardId }: { boardId: number }) {
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-    <Stack spacing={3}>
-      <EditableField value={board.name} onSave={handleUpdateName} />
+  <DragDropContext onDragEnd={onDragEnd}>
+    <Stack spacing={2}>
+      {/* Board Header */}
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{
+          px: 2,
+          py: 1.5,
+          borderRadius: 3,
+          bgcolor: "background.paper",
+          boxShadow: 1,
+        }}
+      >
+        <EditableField value={board.name} onSave={handleUpdateName} />
+      </Box>
 
-        <Box display="flex" gap={2} overflow="auto">
-          {board.cardLists.map((cardList, index) => (
-            <CardList
-              key={cardList.id}
-              id={cardList.id}
-              boardId={boardId}
-              cardList={cardList}
-              index={index}
-            />
-          ))}
+      {/* Lists Wrapper */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          overflowX: "auto",
+          alignItems: "flex-start",
+          pb: 2,
+        }}
+      >
+        {board.cardLists.map((cardList, index) => (
+          <CardList
+            key={cardList.id}
+            id={cardList.id}
+            boardId={boardId}
+            cardList={cardList}
+            index={index}
+          />
+        ))}
 
-          <Box minWidth={250}>
-            {isAdding ? (
-              <Stack spacing={1}>
+        {/* Add List (fixed clean style like Jira) */}
+        <Box
+          sx={{
+            minWidth: 280,
+            flexShrink: 0,
+          }}
+        >
+          {isAdding ? (
+            <Paper
+              sx={{
+                p: 2,
+                borderRadius: 3,
+                bgcolor: "#f4f5f7",
+              }}
+            >
+              <Stack spacing={1.5}>
                 <TextField
                   size="small"
-                  placeholder="Enter list name"
+                  placeholder="List name"
                   value={listName}
                   onChange={(e) => setListName(e.target.value)}
                   autoFocus
@@ -165,24 +201,32 @@ export default function Board({ boardId }: { boardId: number }) {
                     variant="contained"
                     onClick={handleCreateList}
                     disabled={createCardListMutation.isPending}
+                    sx={{ textTransform: "none" }}
                   >
-                    Add
+                    Add List
                   </Button>
                   <Button onClick={() => setIsAdding(false)}>Cancel</Button>
                 </Stack>
               </Stack>
-            ) : (
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => setIsAdding(true)}
-              >
-                + Add List
-              </Button>
-            )}
-          </Box>
+            </Paper>
+          ) : (
+            <Paper
+              onClick={() => setIsAdding(true)}
+              sx={{
+                p: 2,
+                borderRadius: 3,
+                bgcolor: "#f4f5f7",
+                cursor: "pointer",
+                "&:hover": { bgcolor: "#ebecf0" },
+              }}
+            >
+              + Add another list
+            </Paper>
+          )}
         </Box>
+      </Box>
     </Stack>
-    </DragDropContext>
-  );
+  </DragDropContext>
+);
+
 }

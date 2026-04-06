@@ -43,17 +43,32 @@ function App() {
   };
 
   return (
-    <Box p={3}>
-      {/* Top Controls */}
+  <Box p={3}>
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      sx={{
+        mb: 3,
+        p: 2,
+        borderRadius: 3,
+        bgcolor: "background.paper",
+        boxShadow: 1,
+      }}
+    >
+
       <Box display="flex" gap={2} alignItems="center">
-        <FormControl sx={{ minWidth: 200 }} size="small">
-          <InputLabel id="board-select-label">Board</InputLabel>
+        <FormControl size="small" sx={{ minWidth: 220 }}>
+          <InputLabel id="board-select-label">Select Board</InputLabel>
           <Select
             labelId="board-select-label"
             value={selectedBoardId}
-            label="Board"
+            label="Select Board"
             onChange={(e) => setSelectedBoardId(Number(e.target.value))}
             disabled={isLoading}
+            sx={{
+              borderRadius: 2,
+            }}
           >
             {boards.map((board: any) => (
               <MenuItem key={board.id} value={board.id}>
@@ -62,47 +77,84 @@ function App() {
             ))}
           </Select>
         </FormControl>
-
-        <Button variant="contained" onClick={() => setOpen(true)}>
-          + Add Board
-        </Button>
       </Box>
 
-      {/* Create Board Dialog */}
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Create New Board</DialogTitle>
-
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Board Name"
-            fullWidth
-            value={newBoardName}
-            onChange={(e) => setNewBoardName(e.target.value)}
-          />
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button
-            onClick={handleCreateBoard}
-            variant="contained"
-            disabled={createBoardMutation.isPending}
-          >
-            Create
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Board View */}
-      {selectedBoardId && (
-        <Box mt={3}>
-          <Board boardId={selectedBoardId} />
-        </Box>
-      )}
+      <Button
+        variant="contained"
+        onClick={() => setOpen(true)}
+        sx={{
+          borderRadius: 2,
+          textTransform: "none",
+          px: 2.5,
+          py: 1,
+          fontWeight: 500,
+        }}
+      >
+        + New Board
+      </Button>
     </Box>
-  );
+
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      PaperProps={{
+        sx: {
+          borderRadius: 3,
+          p: 1,
+        },
+      }}
+    >
+      <DialogTitle sx={{ fontWeight: 600 }}>
+        Create New Board
+      </DialogTitle>
+
+      <DialogContent>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Board Name"
+          fullWidth
+          value={newBoardName}
+          onChange={(e) => setNewBoardName(e.target.value)}
+          variant="outlined"
+          sx={{
+            mt: 1,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+            },
+          }}
+        />
+      </DialogContent>
+
+      <DialogActions sx={{ px: 3, pb: 2 }}>
+        <Button
+          onClick={() => setOpen(false)}
+          sx={{ textTransform: "none" }}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={handleCreateBoard}
+          variant="contained"
+          disabled={createBoardMutation.isPending}
+          sx={{
+            borderRadius: 2,
+            textTransform: "none",
+            px: 2,
+          }}
+        >
+          Create
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+    {selectedBoardId && (
+      <Box mt={2}>
+        <Board boardId={selectedBoardId} />
+      </Box>
+    )}
+  </Box>
+);
 }
 
 export default App;

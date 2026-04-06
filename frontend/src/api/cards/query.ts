@@ -50,8 +50,8 @@ export const useMoveCard = () => {
       cardId,
       prevCardId,
       nextCardId,
-      cardListId,        // target list
-      sourceCardListId,  // 🆕 source list
+      cardListId,
+      sourceCardListId,
       boardId,
     }: {
       cardId: number
@@ -64,7 +64,6 @@ export const useMoveCard = () => {
       return moveCard(cardId, prevCardId, nextCardId, cardListId)
     },
 
-    // 🔥 OPTIMISTIC UPDATE
     onMutate: async (variables) => {
       const {
         boardId,
@@ -89,73 +88,118 @@ export const useMoveCard = () => {
         (board: BoardData | undefined) => {
           if (!board) return board
 
-          let movingCard: any = null
+          // let movingCard: any = null
+          console.log("Begin")
 
-          return {
-            ...board,
-            cardLists: board.cardLists.map((list: any) => {
-              // 🟡 SOURCE LIST → remove card
-              if (list.id === sourceCardListId) {
-                const filtered = list.cards.filter((card: any) => {
-                  if (card.id === cardId) {
-                    movingCard = card
-                    return false
-                  }
-                  return true
-                })
+          const sourceCardList: Card[] = [...board.cardLists[sourceCardListId].cards]
 
-                return {
-                  ...list,
-                  cards: filtered,
-                }
-              }
+          const { unMovedCards, movedCard } = sourceCardList.reduce<{unMovedCards: Card[]; movedCard: Card[];}>(
+                          (acc, card) => {
+                            if (card.id === cardId) {
+                              acc.movedCard.push(card);
+                            } else {
+                              acc.unMovedCards.push(card);
+                            }
+                            return acc;
+                          },
+                          { unMovedCards: [], movedCard: [] }
+                        );
 
-              // 🟢 TARGET LIST → insert card
-              if (list.id === cardListId) {
-                const newCards = [...list.cards]
+          console.log("got the card")
+          board.cardLists[sourceCardListId].cards = unMovedCards
 
-                // If same list, movingCard might still be null at this point
-                if (!movingCard && sourceCardListId === cardListId) {
-                  const existing = list.cards.find(
-                    (c: any) => c.id === cardId
-                  )
-                  movingCard = existing
-                }
+          const destinationCardList: Card[] = [...board.cardLists[cardListId].cards]
 
-                if (!movingCard) return list
-
-                let insertIndex = 0
-
-                if (prevCardId) {
-                  insertIndex =
-                    newCards.findIndex((c) => c.id === prevCardId) + 1
-                } else if (nextCardId) {
-                  insertIndex = newCards.findIndex(
-                    (c) => c.id === nextCardId
-                  )
-                }
-
-                newCards.splice(insertIndex, 0, {
-                  ...movingCard,
-                  cardListId,
-                })
-
-                return {
-                  ...list,
-                  cards: newCards,
-                }
-              }
-
-              return list
-            }),
+          if (!destinationCardList.length) {
+            destinationCardList.push(movedCard[0])
+            board.cardLists[cardListId].cards = destinationCardList
+            return board;
           }
+
+          const prevCardIndex: number = destinationCardList.findIndex((card: Card) => card.id === prevCardId)
+          const nextCardIndex: number = destinationCardList.findIndex((card: Card) => card.id === nextCardId)
+
+          const cardIndexInNewList: number = prevCardIndex !== -1 ? prevCardIndex + 1 :
+                        nextCardIndex !== -1 ? nextCardIndex :
+                        -1;
+          if (cardIndexInNewList !== -1) {
+          
+            board.cardLists[cardListId].cards = [
+              ...destinationCardList.slice(0, cardIndexInNewList),
+              movedCard[0],
+              ...destinationCardList.slice(cardIndexInNewList)
+            ];
+          } else {
+            destinationCardList.push(movedCard[0])
+          }
+
+          board.cardLists[cardListId].cards = destinationCardList
+
+          console.log(`final list: ${board}`)
+          return board;
+
+          // return {
+          //   ...board,
+          //   cardLists: board.cardLists.map((list: any) => {
+  
+          //     if (list.id === sourceCardListId) {
+          //       const filtered = list.cards.filter((card: any) => {
+          //         if (card.id === cardId) {
+          //           movingCard = card
+          //           return false
+          //         }
+          //         return true
+          //       })
+
+          //       return {
+          //         ...list,
+          //         cards: filtered,
+          //       }
+          //     }
+
+          //     if (list.id === cardListId) {
+          //       const newCards = [...list.cards]
+
+          //       if (!movingCard && sourceCardListId === cardListId) {
+          //         const existing = list.cards.find(
+          //           (c: any) => c.id === cardId
+          //         )
+          //         movingCard = existing
+          //       }
+          //       console.log(`Card is: ${movingCard}`)
+          //       if (!movingCard) return list
+
+          //       let insertIndex = 0
+
+          //       if (prevCardId) {
+          //         insertIndex =
+          //           newCards.findIndex((c) => c.id === prevCardId) + 1
+          //       } else if (nextCardId) {
+          //         insertIndex = newCards.findIndex(
+          //           (c) => c.id === nextCardId
+          //         )
+          //       }
+
+          //       newCards.splice(insertIndex, 0, {
+          //         ...movingCard,
+          //         cardListId,
+          //       })
+
+          //       return {
+          //         ...list,
+          //         cards: newCards,
+          //       }
+          //     }
+
+          //     return list
+          //   }),
+          // }
         }
       )
 
       return { previousBoard }
     },
 
-    // ❌ Rollback
     onError: (_err, variables, context) => {
       if (context?.previousBoard) {
         queryClient.setQueryData(
@@ -165,11 +209,10 @@ export const useMoveCard = () => {
       }
     },
 
-    // 🔄 Refetch for correctness
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [ QUERY_KEYS.BOARD, variables.boardId,]
-      })
+      // queryClient.invalidateQueries({
+      //   queryKey: [ QUERY_KEYS.BOARD, variables.boardId,]
+      // })
     },
   })
 }
