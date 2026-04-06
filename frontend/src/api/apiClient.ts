@@ -2,6 +2,7 @@ import axios from "axios";
 import { apiUrl } from "./apiUrl";
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
+import { API_CONFIG } from "./config";
 
 const apiClient = axios.create({
   baseURL: apiUrl(),
@@ -13,7 +14,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token: string | null = localStorage.getItem("token");
+    const token: string | null = API_CONFIG.TOKEN;
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

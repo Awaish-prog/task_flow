@@ -24,11 +24,19 @@ class CardOrderUpdate(BaseModel):
     prev_card_id: Optional[int] = None
     next_card_id: Optional[int] = None
     card_list_id: Optional[int] = None
+    
+class CardResponse(CardBase):
+    name: str
+    description: str = None
+    card_list_id: int
+    order_key: str = None
+    deleted: bool = False
 
 class Card(CardBase):
     name: str
     description: str = None
     card_list_id: int
     order_key: str = None
+    deleted: bool = False
     
     model_config = ConfigDict(from_attributes=True)

@@ -1,10 +1,11 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, collate
+from sqlalchemy import Column, Integer, String, ForeignKey, collate, Boolean
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 from app.models.cards import Card
+from app.models.mixins.soft_delete import SoftDeleteMixin
 
 
-class CardList(Base):
+class CardList(Base, SoftDeleteMixin):
     __tablename__ = "card_lists"
     
     id = Column(Integer, primary_key=True)

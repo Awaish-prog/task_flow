@@ -18,10 +18,12 @@ export default function CardList({
   id,
   boardId,
   cardList,
+  index
 }: {
   id: number;
   boardId: number;
   cardList: CardListData;
+  index: number
 }) {
   const { mutate: updateCardListName } = useUpdateCardList();
   const { mutate: createCard } = useCreateCard();
@@ -61,7 +63,7 @@ export default function CardList({
       <Stack spacing={2}>
         <EditableField value={cardList.name} onSave={handleSave} />
 
-        <Droppable droppableId={cardList.id.toString()}>
+        <Droppable droppableId={index.toString()}>
           {(provided: any) => (
             <div
             ref={provided.innerRef}

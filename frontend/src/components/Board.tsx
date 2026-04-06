@@ -99,21 +99,25 @@ export default function Board({ boardId }: { boardId: number }) {
   const onDragEnd = (result: DropResult) => {
     console.log(result)
 
-    const sourceCardListId: number = Number(result.source?.droppableId)
-    const destinationListId: number = Number(result.destination?.droppableId)
+    const sourceCardListIndex: number = Number(result.source?.droppableId)
+    const destinationListIndex: number = Number(result.destination?.droppableId)
+
+    const sourceCardListId: number = board.cardLists[sourceCardListIndex].id
+    const destinationListId: number = board.cardLists[destinationListIndex].id
 
     const destinationIndex = result.destination?.index
     console.log(board)
+    console.log(destinationListId)
     const prevCardId: number | null = destinationIndex && destinationIndex > 0 ?
-      board.cardLists[destinationListId - 1].cards[destinationIndex - 1].id :
+      board.cardLists[destinationListIndex].cards[destinationIndex - 1].id :
       null
-    const nextCardId: number | null = destinationIndex != undefined && destinationIndex < board.cardLists[destinationListId - 1].cards.length ?
-      board.cardLists[destinationListId - 1].cards[destinationIndex].id :
+    const nextCardId: number | null = destinationIndex != undefined && destinationIndex < board.cardLists[destinationListIndex].cards.length ?
+      board.cardLists[destinationListIndex].cards[destinationIndex].id :
       null
     console.log({
       destinationIndex,
       cardId: Number(result.draggableId),
-      cardListId: Number(result.destination?.droppableId),
+      cardListId: destinationListId,
       prevCardId,
       nextCardId,
       sourceCardListId
@@ -121,7 +125,7 @@ export default function Board({ boardId }: { boardId: number }) {
     moveCard.mutate(
       {
         cardId: Number(result.draggableId),
-        cardListId: Number(result.destination?.droppableId),
+        cardListId: destinationListId,
         prevCardId,
         nextCardId,
         sourceCardListId,
@@ -136,12 +140,13 @@ export default function Board({ boardId }: { boardId: number }) {
       <EditableField value={board.name} onSave={handleUpdateName} />
 
         <Box display="flex" gap={2} overflow="auto">
-          {board.cardLists.map((cardList) => (
+          {board.cardLists.map((cardList, index) => (
             <CardList
               key={cardList.id}
               id={cardList.id}
               boardId={boardId}
               cardList={cardList}
+              index={index}
             />
           ))}
 

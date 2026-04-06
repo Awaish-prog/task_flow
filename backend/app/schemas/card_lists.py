@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
-from app.schemas.cards import Card
+from app.schemas.cards import Card, CardResponse
 
 class CardListBase(BaseModel):
     id: int
@@ -20,6 +20,6 @@ class CardListUpdate(BaseModel):
 class CardList(CardListBase):
     name: str
     board_id: int
-    cards: List[Card] = []
+    cards: List[CardResponse] = []
     
     model_config = ConfigDict(from_attributes=True)

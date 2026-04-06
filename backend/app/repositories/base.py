@@ -52,7 +52,7 @@ class BaseRepository(Generic[ModelType]):
         obj = await self.get(db, id)
         if not obj:
             return False
-
-        await db.delete(obj)
+        
+        obj.soft_delete()
         await db.commit()
         return True
