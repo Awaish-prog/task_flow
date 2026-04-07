@@ -8,7 +8,7 @@ class CardOrderService(CardService):
         super().__init__()
         
     async def create(self, db: AsyncSession, obj_in: CardCreateRequest):
-        last_card = await self.repository.get_cards_in_desc(db)
+        last_card = await self.repository.get_cards_in_list_desc(db, obj_in.card_list_id)
 
         last_key = last_card.order_key if last_card else None
         key = generate_key_between(last_key, None)

@@ -13,3 +13,17 @@ class CardListRepository(BaseRepository[CardList]):
     async def get(self, db: AsyncSession, id: int) -> Optional[CardList]:
         result = await db.execute(select(self.model).where(self.model.id == id).options(selectinload(CardList.cards)))
         return result.scalar_one_or_none()
+    
+    async def delete(self, db: AsyncSession, id: int) -> bool:
+        card_list = await db.get(CardList, id)
+
+        if not card_list:
+            return False
+
+        for card in card_list.cards:
+            card.soft_delete()
+
+        card_list.soft_delete()
+
+        await db.commit()
+        return True

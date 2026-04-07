@@ -13,3 +13,19 @@ class BoardRepository(BaseRepository[Board]):
     async def get(self, db: AsyncSession, id: int) -> Optional[Board]:
         result = await db.execute(select(self.model).where(self.model.id == id).options(selectinload(Board.card_lists).selectinload(CardList.cards)))
         return result.scalar_one_or_none()
+    
+    async def delete(self, db: AsyncSession, id: int) -> bool:
+        board = await self.get(db, id)
+
+        if not board:
+            return False
+
+        for card_list in board.card_lists:
+            for card in card_list.cards:
+                card.soft_delete()
+            card_list.soft_delete()
+
+        board.soft_delete()
+
+        await db.commit()
+        return True
