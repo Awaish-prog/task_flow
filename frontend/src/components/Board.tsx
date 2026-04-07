@@ -1,14 +1,18 @@
 import { Stack, Box, Button, TextField, Paper } from "@mui/material";
 import { useState } from "react";
-import CardList from "./CardList";
 import EditableField from "./ui/EditableField";
 import { useBoard, useUpdateBoard } from "../api/boards/query";
 import { useCreateCardList } from "../api/cardLists/query";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import AddIcon from "@mui/icons-material/Add";
 
 // import { DragDropContext, type DropResult } from "react-beautiful-dnd";
 
 import { useQueryClient } from "@tanstack/react-query";
-import type { BoardData, Card, CardListData } from "../types/Types";
+import type { CardListData } from "../types/Types";
 
 import {
   DragDropContext,
@@ -16,6 +20,7 @@ import {
   type DropResult,
 } from "@hello-pangea/dnd";
 import { useMoveCard } from "../api/cards/query";
+import CardList from "./CardList";
 
 export default function Board({ boardId }: { boardId: number }) {
   const { data: board, isLoading } = useBoard(boardId);
@@ -97,31 +102,24 @@ export default function Board({ boardId }: { boardId: number }) {
 
 
   const onDragEnd = (result: DropResult) => {
-    console.log(result)
+    const sourceCardListId: number = Number(result.source?.droppableId)
+    const destinationListId: number = Number(result.destination?.droppableId)
 
-    const sourceCardListIndex: number = Number(result.source?.droppableId)
-    const destinationListIndex: number = Number(result.destination?.droppableId)
+    const destinationCardList: CardListData | undefined = board.cardLists.find(cardList => cardList.id === destinationListId)
 
-    const sourceCardListId: number = board.cardLists[sourceCardListIndex].id
-    const destinationListId: number = board.cardLists[destinationListIndex].id
+    if (destinationCardList === undefined || result.destination === null || result.destination.index === null) {
+      return;
+    }
+    const destinationIndex = result.destination.index
 
-    const destinationIndex = result.destination?.index
-    console.log(board)
-    console.log(destinationListId)
-    const prevCardId: number | null = destinationIndex && destinationIndex > 0 ?
-      board.cardLists[destinationListIndex].cards[destinationIndex - 1].id :
+    const prevCardId: number | null | undefined = destinationIndex !== undefined && destinationIndex > 0 ?
+      destinationCardList.cards[destinationIndex - 1]?.id :
       null
-    const nextCardId: number | null = destinationIndex != undefined && destinationIndex < board.cardLists[destinationListIndex].cards.length ?
-      board.cardLists[destinationListIndex].cards[destinationIndex].id :
+
+    const nextCardId: number | null | undefined = destinationIndex !== undefined && destinationIndex < destinationCardList.cards.length ?
+      destinationCardList.cards[destinationIndex]?.id :
       null
-    console.log({
-      destinationIndex,
-      cardId: Number(result.draggableId),
-      cardListId: destinationListId,
-      prevCardId,
-      nextCardId,
-      sourceCardListId
-    })
+
     moveCard.mutate(
       {
         cardId: Number(result.draggableId),
@@ -129,40 +127,25 @@ export default function Board({ boardId }: { boardId: number }) {
         prevCardId,
         nextCardId,
         sourceCardListId,
-        boardId: boardId
+        boardId: boardId,
+        destCardIndex: destinationIndex
       }
     )
   }
 
   return (
   <DragDropContext onDragEnd={onDragEnd}>
-    <Stack spacing={2}>
-      {/* Board Header */}
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{
-          px: 2,
-          py: 1.5,
-          borderRadius: 3,
-          bgcolor: "background.paper",
-          boxShadow: 1,
-        }}
-      >
-        <EditableField value={board.name} onSave={handleUpdateName} />
-      </Box>
+    <div className="flex flex-col gap-4">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between px-1">
+        <h1 className="text-5xl font-semibold text-gray-800">
+          <EditableField value={board.name} onSave={handleUpdateName} />
+        </h1>
+      </div>
 
-      {/* Lists Wrapper */}
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          overflowX: "auto",
-          alignItems: "flex-start",
-          pb: 2,
-        }}
-      >
+      {/* Lists */}
+      <div className="flex gap-3 overflow-x-auto pb-4">
         {board.cardLists.map((cardList, index) => (
           <CardList
             key={cardList.id}
@@ -173,59 +156,45 @@ export default function Board({ boardId }: { boardId: number }) {
           />
         ))}
 
-        {/* Add List (fixed clean style like Jira) */}
-        <Box
-          sx={{
-            minWidth: 280,
-            flexShrink: 0,
-          }}
-        >
+        {/* Add List */}
+        <div className="w-[280px] flex-shrink-0">
           {isAdding ? (
-            <Paper
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                bgcolor: "#f4f5f7",
-              }}
-            >
-              <Stack spacing={1.5}>
-                <TextField
-                  size="small"
+            <div className="bg-gray-100 rounded-sm p-3 shadow-sm">
+              <div className="flex flex-col gap-2">
+                <input
+                  className="w-full px-2 py-1.5 text-sm border rounded-sm outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="List name"
                   value={listName}
                   onChange={(e) => setListName(e.target.value)}
                   autoFocus
                 />
-                <Stack direction="row" spacing={1}>
-                  <Button
-                    variant="contained"
+                <div className="flex gap-2">
+                  <button
                     onClick={handleCreateList}
-                    disabled={createCardListMutation.isPending}
-                    sx={{ textTransform: "none" }}
+                    className="bg-blue-600 text-white px-3 py-1.5 rounded-sm text-sm hover:bg-blue-700"
                   >
                     Add List
-                  </Button>
-                  <Button onClick={() => setIsAdding(false)}>Cancel</Button>
-                </Stack>
-              </Stack>
-            </Paper>
+                  </button>
+                  <button
+                    onClick={() => setIsAdding(false)}
+                    className="text-sm text-gray-600 hover:text-black"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : (
-            <Paper
-              onClick={() => setIsAdding(true)}
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                bgcolor: "#f4f5f7",
-                cursor: "pointer",
-                "&:hover": { bgcolor: "#ebecf0" },
-              }}
-            >
-              + Add another list
-            </Paper>
+            <div
+  onClick={() => setIsAdding(true)}
+  className="w-12 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition rounded-sm cursor-pointer flex-shrink-0"
+>
+  <AddIcon className="text-gray-600" fontSize="small" />
+</div>
           )}
-        </Box>
-      </Box>
-    </Stack>
+        </div>
+      </div>
+    </div>
   </DragDropContext>
 );
 

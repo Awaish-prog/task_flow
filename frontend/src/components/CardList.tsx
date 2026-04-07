@@ -5,6 +5,7 @@ import EditableField from "./ui/EditableField";
 import type { CardListData } from "../types/Types";
 import { useUpdateCardList } from "../api/cardLists/query";
 import { useCreateCard } from "../api/cards/query";
+import AddIcon from "@mui/icons-material/Add";
 
 // import { Droppable } from "react-beautiful-dnd";
 
@@ -59,38 +60,21 @@ export default function CardList({
   };
 
     return (
-  <Paper
-    sx={{
-      width: 280,
-      maxHeight: "80vh",
-      display: "flex",
-      flexDirection: "column",
-      bgcolor: "#f4f5f7",
-      borderRadius: 3,
-      p: 1.5,
-      flexShrink: 0,
-    }}
-  >
-    {/* List Header */}
-    <Box display="flex" alignItems="center" justifyContent="space-between">
+  <div className="w-[90vw] max-w-[340px] max-h-[80vh] flex flex-col bg-gray-100 rounded-sm p-1 flex-shrink-0">
+    
+    {/* Header */}
+    <div className="text-1xl px-1 py-1 ml-2">
       <EditableField value={cardList.name} onSave={handleSave} />
-    </Box>
+      <p>{cardList.id}</p>
+    </div>
 
     {/* Cards */}
     <Droppable droppableId={cardList.id.toString()}>
-      {(provided: any) => (
-        <Box
+      {(provided) => (
+        <div
           ref={provided.innerRef}
           {...provided.droppableProps}
-          sx={{
-            mt: 1,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-            overflowY: "auto",
-            maxHeight: "60vh",
-            pr: 0.5,
-          }}
+          className="flex flex-col gap-2 mt-2 overflow-y-auto pr-1"
         >
           {cardList.cards.map((card, index) => (
             <Card
@@ -102,58 +86,57 @@ export default function CardList({
             />
           ))}
           {provided.placeholder}
-        </Box>
+        </div>
       )}
     </Droppable>
 
     {/* Add Card */}
-    <Box mt={1}>
+    <div className="mt-2">
       {isAdding ? (
-        <Paper sx={{ p: 1.5, borderRadius: 2 }}>
-          <Stack spacing={1}>
-            <TextField
-              size="small"
+        <div className="bg-white rounded-sm p-2 shadow-sm">
+          <div className="flex flex-col gap-2">
+            <input
+              className="px-2 py-1.5 text-sm border rounded-sm outline-none focus:ring-2 focus:ring-blue-500"
               value={cardName}
               onChange={(e) => setCardName(e.target.value)}
               placeholder="Card title"
               autoFocus
             />
-            <TextField
-              size="small"
+            <textarea
+              className="px-2 py-1.5 text-sm border rounded-sm outline-none focus:ring-2 focus:ring-blue-500"
               value={cardDescription}
               onChange={(e) => setCardDescription(e.target.value)}
               placeholder="Description"
-              multiline
-              minRows={2}
+              rows={2}
             />
-            <Stack direction="row" spacing={1}>
-              <Button
-                variant="contained"
+            <div className="flex gap-2">
+              <button
                 onClick={handleAddCard}
-                sx={{ textTransform: "none" }}
+                className="bg-blue-600 text-white px-3 py-1.5 rounded-sm text-sm hover:bg-blue-700"
               >
                 Add
-              </Button>
-              <Button onClick={() => setIsAdding(false)}>Cancel</Button>
-            </Stack>
-          </Stack>
-        </Paper>
+              </button>
+              <button
+                onClick={() => setIsAdding(false)}
+                className="text-sm text-gray-600 hover:text-black"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       ) : (
-        <Button
-          fullWidth
-          onClick={() => setIsAdding(true)}
-          sx={{
-            justifyContent: "flex-start",
-            textTransform: "none",
-            color: "text.secondary",
-          }}
-        >
-          + Add a card
-        </Button>
+        <div className="flex justify-center">
+  <button
+    onClick={() => setIsAdding(true)}
+    className="w-10 h-10 flex items-center justify-center bg-gray-200 hover:bg-gray-300 transition rounded-sm"
+  >
+    <AddIcon className="text-gray-700" fontSize="small" />
+  </button>
+</div>
       )}
-    </Box>
-  </Paper>
+    </div>
+  </div>
 );
-
 
 }

@@ -44,38 +44,33 @@ export default function Card({
   return (
   <Draggable draggableId={card.id.toString()} index={index}>
     {(provided, snapshot) => (
-      <Box
+      <div
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
       >
-        <Paper
-          sx={{
-            p: 1.5,
-            borderRadius: 2,
-            bgcolor: "white",
-            boxShadow: snapshot.isDragging ? 3 : 1,
-            cursor: "pointer",
-            "&:hover": { boxShadow: 3 },
-          }}
+        <div
+          className={`bg-white rounded-sm p-3 shadow-sm hover:shadow-md transition cursor-pointer ${
+            snapshot.isDragging ? "shadow-lg" : ""
+          }`}
         >
-          <Stack spacing={0.5}>
+          <div className="text-1xl flex flex-col gap-1">
             <EditableField value={card.name} onSave={handleUpdateName} />
 
             {card.description && (
-              <Box
-                sx={{
-                  fontSize: 12,
-                  color: "text.secondary",
-                  lineHeight: 1.4,
-                }}
-              >
-                {card.description}
-              </Box>
+              <div className="text-gray-500 leading-relaxed">
+                <EditableField value={card.description} onSave={handleUpdateDescription} />
+              </div>
             )}
-          </Stack>
-        </Paper>
-      </Box>
+
+            {
+              card.orderKey && (
+                <p>{card.orderKey}, id: {card.id}</p>
+              )
+            }
+          </div>
+        </div>
+      </div>
     )}
   </Draggable>
 );

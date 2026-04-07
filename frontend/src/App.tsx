@@ -43,33 +43,24 @@ function App() {
   };
 
   return (
-  <Box p={3}>
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{
-        mb: 3,
-        p: 2,
-        borderRadius: 3,
-        bgcolor: "background.paper",
-        boxShadow: 1,
-      }}
-    >
-
-      <Box display="flex" gap={2} alignItems="center">
-        <FormControl size="small" sx={{ minWidth: 220 }}>
-          <InputLabel id="board-select-label">Select Board</InputLabel>
+  <div className="p-4">
+    
+    {/* Top Bar */}
+    <div className="flex items-center justify-end gap-2 mb-4 px-1">
+      
+      {/* Board Select */}
+      <div>
+        <FormControl size="small">
           <Select
-            labelId="board-select-label"
             value={selectedBoardId}
-            label="Select Board"
             onChange={(e) => setSelectedBoardId(Number(e.target.value))}
             disabled={isLoading}
-            sx={{
-              borderRadius: 2,
-            }}
+            displayEmpty
+            className="min-w-[200px] bg-white rounded-sm text-sm"
           >
+            <MenuItem value="" disabled>
+              Select Board
+            </MenuItem>
             {boards.map((board: any) => (
               <MenuItem key={board.id} value={board.id}>
                 {board.name}
@@ -77,29 +68,24 @@ function App() {
             ))}
           </Select>
         </FormControl>
-      </Box>
+      </div>
 
-      <Button
-        variant="contained"
+      {/* New Board Button */}
+      <button
         onClick={() => setOpen(true)}
-        sx={{
-          borderRadius: 2,
-          textTransform: "none",
-          px: 2.5,
-          py: 1,
-          fontWeight: 500,
-        }}
+        className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-sm font-medium transition"
       >
         + New Board
-      </Button>
-    </Box>
+      </button>
+    </div>
 
+    {/* Dialog */}
     <Dialog
       open={open}
       onClose={() => setOpen(false)}
       PaperProps={{
         sx: {
-          borderRadius: 3,
+          borderRadius: 12,
           p: 1,
         },
       }}
@@ -109,51 +95,39 @@ function App() {
       </DialogTitle>
 
       <DialogContent>
-        <TextField
+        <input
           autoFocus
-          margin="dense"
-          label="Board Name"
-          fullWidth
+          placeholder="Board name"
           value={newBoardName}
           onChange={(e) => setNewBoardName(e.target.value)}
-          variant="outlined"
-          sx={{
-            mt: 1,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 2,
-            },
-          }}
+          className="w-full mt-2 px-3 py-2 border rounded-sm text-sm outline-none focus:ring-2 focus:ring-blue-500"
         />
       </DialogContent>
 
-      <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button
+      <DialogActions className="px-4 pb-3">
+        <button
           onClick={() => setOpen(false)}
-          sx={{ textTransform: "none" }}
+          className="text-sm text-gray-600 hover:text-black"
         >
           Cancel
-        </Button>
-        <Button
+        </button>
+        <button
           onClick={handleCreateBoard}
-          variant="contained"
           disabled={createBoardMutation.isPending}
-          sx={{
-            borderRadius: 2,
-            textTransform: "none",
-            px: 2,
-          }}
+          className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1.5 rounded-sm"
         >
           Create
-        </Button>
+        </button>
       </DialogActions>
     </Dialog>
 
+    {/* Board */}
     {selectedBoardId && (
-      <Box mt={2}>
+      <div className="mt-3">
         <Board boardId={selectedBoardId} />
-      </Box>
+      </div>
     )}
-  </Box>
+  </div>
 );
 }
 

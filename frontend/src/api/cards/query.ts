@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import type { BoardData, Card } from '../../types/Types'
+import type { BoardData, Card, CardListData } from '../../types/Types'
 import { QUERY_KEYS } from '../queryKeys'
 import { createCard, moveCard, updateCard } from './apis'
 
@@ -53,13 +53,15 @@ export const useMoveCard = () => {
       cardListId,
       sourceCardListId,
       boardId,
+      destCardIndex
     }: {
       cardId: number
       prevCardId: number | null
       nextCardId: number | null
       cardListId: number
       sourceCardListId: number
-      boardId: number
+      boardId: number,
+      destCardIndex: number
     }) => {
       return moveCard(cardId, prevCardId, nextCardId, cardListId)
     },
@@ -72,6 +74,7 @@ export const useMoveCard = () => {
         sourceCardListId,
         prevCardId,
         nextCardId,
+        destCardIndex
       } = variables
 
       await queryClient.cancelQueries({
@@ -88,111 +91,86 @@ export const useMoveCard = () => {
         (board: BoardData | undefined) => {
           if (!board) return board
 
-          // let movingCard: any = null
-          console.log("Begin")
+          const destCardListIndex: number = board.cardLists.findIndex(cardList => cardList.id === cardListId);          
+          const sourceCardListIndex: number = board.cardLists.findIndex(cardList => cardList.id === sourceCardListId);
 
-          const sourceCardList: Card[] = [...board.cardLists[sourceCardListId].cards]
-
-          const { unMovedCards, movedCard } = sourceCardList.reduce<{unMovedCards: Card[]; movedCard: Card[];}>(
-                          (acc, card) => {
-                            if (card.id === cardId) {
-                              acc.movedCard.push(card);
-                            } else {
-                              acc.unMovedCards.push(card);
-                            }
-                            return acc;
-                          },
-                          { unMovedCards: [], movedCard: [] }
-                        );
-
-          console.log("got the card")
-          board.cardLists[sourceCardListId].cards = unMovedCards
-
-          const destinationCardList: Card[] = [...board.cardLists[cardListId].cards]
-
-          if (!destinationCardList.length) {
-            destinationCardList.push(movedCard[0])
-            board.cardLists[cardListId].cards = destinationCardList
-            return board;
+          if (sourceCardListIndex === -1 || destCardListIndex === -1) {
+            return;
           }
 
-          const prevCardIndex: number = destinationCardList.findIndex((card: Card) => card.id === prevCardId)
-          const nextCardIndex: number = destinationCardList.findIndex((card: Card) => card.id === nextCardId)
+          const sourceCardList: CardListData = { ...board.cardLists[sourceCardListIndex] };
+          const destCardList: CardListData = { ...board.cardLists[destCardListIndex] };
 
-          const cardIndexInNewList: number = prevCardIndex !== -1 ? prevCardIndex + 1 :
-                        nextCardIndex !== -1 ? nextCardIndex :
-                        -1;
-          if (cardIndexInNewList !== -1) {
-          
-            board.cardLists[cardListId].cards = [
-              ...destinationCardList.slice(0, cardIndexInNewList),
-              movedCard[0],
-              ...destinationCardList.slice(cardIndexInNewList)
-            ];
-          } else {
-            destinationCardList.push(movedCard[0])
+          const cardIndex = sourceCardList.cards.findIndex(card => card.id === cardId);
+          const card: Card | undefined = cardIndex !== -1 ? sourceCardList.cards.splice(cardIndex, 1)[0] : undefined;
+
+          if (!card) {
+            return;
           }
 
-          board.cardLists[cardListId].cards = destinationCardList
+          destCardList.cards.splice(destCardIndex, 0, card);
 
-          console.log(`final list: ${board}`)
+          board.cardLists[sourceCardListIndex] = sourceCardList;
+          board.cardLists[destCardListIndex] = destCardList
+
           return board;
 
           // return {
           //   ...board,
-          //   cardLists: board.cardLists.map((list: any) => {
+          //   cardLists: []
+            // cardLists: board.cardLists.map((list: any) => {
   
-          //     if (list.id === sourceCardListId) {
-          //       const filtered = list.cards.filter((card: any) => {
-          //         if (card.id === cardId) {
-          //           movingCard = card
-          //           return false
-          //         }
-          //         return true
-          //       })
+            //   if (list.id === sourceCardListId) {
+            //     const filtered = list.cards.filter((card: any) => {
+            //       if (card.id === cardId) {
+            //         movingCard = card
+            //         return false
+            //       }
+            //       return true
+            //     })
 
-          //       return {
-          //         ...list,
-          //         cards: filtered,
-          //       }
-          //     }
+            //     return {
+            //       ...list,
+            //       cards: filtered,
+            //     }
+            //   }
 
-          //     if (list.id === cardListId) {
-          //       const newCards = [...list.cards]
+            //   if (list.id === cardListId) {
+            //     const newCards = [...list.cards]
 
-          //       if (!movingCard && sourceCardListId === cardListId) {
-          //         const existing = list.cards.find(
-          //           (c: any) => c.id === cardId
-          //         )
-          //         movingCard = existing
-          //       }
-          //       console.log(`Card is: ${movingCard}`)
-          //       if (!movingCard) return list
+            //     if (!movingCard && sourceCardListId === cardListId) {
+            //       const existing = list.cards.find(
+            //         (c: any) => c.id === cardId
+            //       )
+            //       movingCard = existing
+            //     }
+            //     console.log(`Card is: ${movingCard}`)
+            //     if (!movingCard) return list
 
-          //       let insertIndex = 0
+            //     let insertIndex = 0
 
-          //       if (prevCardId) {
-          //         insertIndex =
-          //           newCards.findIndex((c) => c.id === prevCardId) + 1
-          //       } else if (nextCardId) {
-          //         insertIndex = newCards.findIndex(
-          //           (c) => c.id === nextCardId
-          //         )
-          //       }
+            //     if (prevCardId) {
+            //       insertIndex =
+            //         newCards.findIndex((c) => c.id === prevCardId) + 1
+            //     } else if (nextCardId) {
+            //       insertIndex = newCards.findIndex(
+            //         (c) => c.id === nextCardId
+            //       )
+            //     }
 
-          //       newCards.splice(insertIndex, 0, {
-          //         ...movingCard,
-          //         cardListId,
-          //       })
+            //     newCards.splice(insertIndex, 0, {
+            //       ...movingCard,
+            //       cardListId,
+            //     })
 
-          //       return {
-          //         ...list,
-          //         cards: newCards,
-          //       }
-          //     }
+            //     return {
+            //       ...list,
+            //       cards: newCards,
+            //     }
+            //   }
 
-          //     return list
-          //   }),
+            //   return list
+            // }),
           // }
         }
       )
