@@ -1,25 +1,18 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional, List
-from app.schemas.cards import Card, CardResponse
+from app.schemas.cards import Card
 
 class CardListBase(BaseModel):
     id: int
     
-class CardListApi(BaseModel):
-    name: str
+class CardListUpdate(BaseModel):
+    name: str = Field(..., max_length=15, min_length=3)
     board_id: int
     
-class CardListResponse(CardListBase):
-    name: str
-    board_id: int
+class CardListResponse(CardListBase, CardListUpdate):
+   pass
 
-class CardListUpdate(BaseModel):
-    name: Optional[str] = None
-    board_id: Optional[int] = None
-
-class CardList(CardListBase):
-    name: str
-    board_id: int
-    cards: List[CardResponse] = []
+class CardList(CardListBase, CardListUpdate):
+    cards: List[Card] = []
     
     model_config = ConfigDict(from_attributes=True)

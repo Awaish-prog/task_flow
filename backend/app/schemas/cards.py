@@ -4,39 +4,20 @@ from typing import Optional
 class CardBase(BaseModel):
     id: int
     
-class CardCreateRequest(BaseModel):
-    name: str
-    description: Optional[str] = None
-    card_list_id: int
-    
-class CardCreate(CardCreateRequest):
-    name: str
-    description: Optional[str] = None
-    card_list_id: int
-    order_key: str = None
-    
 class CardUpdate(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    card_list_id: Optional[int] = None
+    name: str = Field(..., max_length=15, min_length=3)
+    description: str = Field(..., max_length=50, min_length=3)
+    card_list_id: int
     
 class CardOrderUpdate(BaseModel):
     prev_card_id: Optional[int] = None
     next_card_id: Optional[int] = None
-    card_list_id: Optional[int] = None
+    card_list_id: int = None
     
-class CardResponse(CardBase):
-    name: str
-    description: str = None
-    card_list_id: int
+class CardCreate(CardUpdate):
     order_key: str = None
-    deleted: bool = False
 
-class Card(CardBase):
-    name: str
-    description: str = None
-    card_list_id: int
+class Card(CardBase, CardUpdate):
     order_key: str = None
-    deleted: bool = False
     
     model_config = ConfigDict(from_attributes=True)

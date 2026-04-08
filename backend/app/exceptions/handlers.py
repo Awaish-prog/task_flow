@@ -1,6 +1,7 @@
 from fastapi import Request, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
+from fastapi.exceptions import RequestValidationError
 
 from app.exceptions.response import error_response
 from app.exceptions.exceptions import *
@@ -16,6 +17,17 @@ def register_exception_handlers(app):
     @app.exception_handler(NotFoundException)
     async def not_found_handler(request: Request, exc: NotFoundException):
         return create_error_response(status.HTTP_404_NOT_FOUND, exc.message)
+    
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        err = exc.errors()[0]
+        field = err["loc"][-1]
+        message = f"{field}: {err['msg']}"
+
+        return create_error_response(
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            message
+        )
 
     @app.exception_handler(BadRequestException)
     async def bad_request_handler(request: Request, exc: BadRequestException):
