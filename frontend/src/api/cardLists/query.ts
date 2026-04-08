@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createCardList, updateCardList } from './apis'
+import { createCardList, deleteCardList, updateCardList } from './apis'
 import type { BoardData, CardList, CardListData } from '../../types/Types'
 import { QUERY_KEYS } from '../queryKeys'
 
@@ -54,3 +54,62 @@ export const useCreateCardList = () => {
     },
   });
 };
+
+export const useDeleteCardList = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+
+    mutationFn: async ({
+      cardListId,
+      boardId
+    } : { cardListId: number, boardId: number }) => {
+      return await deleteCardList(cardListId);
+    },
+
+    onMutate: async (variables: { cardListId: number, boardId: number }) => {
+
+      const { cardListId, boardId } = variables
+      await queryClient.cancelQueries({
+        queryKey: [QUERY_KEYS.BOARD, boardId],
+      });
+
+      const previousBoard: BoardData | undefined = queryClient.getQueryData([
+        QUERY_KEYS.BOARD,
+        boardId,
+      ]);
+
+      if (!previousBoard) {
+        return;
+      }
+      queryClient.setQueryData(
+    [QUERY_KEYS.BOARD, boardId],
+    (oldData: BoardData | undefined) => {
+      if (!oldData) return oldData;
+
+      return {
+        ...oldData,
+        cardLists: oldData.cardLists.filter(
+          (cardList) => cardList.id !== cardListId
+        ),
+      };
+    }
+  );
+      return { previousBoard };
+    },
+
+    onError: (_err, boardId, context) => {
+      queryClient.setQueryData(
+        [QUERY_KEYS.BOARD, boardId],
+        context?.previousBoard
+      );
+    },
+
+    onSettled: (_data, _err, boardId) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.BOARD, boardId]
+      });
+    },
+
+  });
+}

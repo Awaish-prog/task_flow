@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { BoardData, Card, CardListData } from '../../types/Types'
 import { QUERY_KEYS } from '../queryKeys'
-import { createCard, moveCard, updateCard } from './apis'
+import { createCard, deleteCard, moveCard, updateCard } from './apis'
 
 export const useUpdateCard = () => {
   const queryClient = useQueryClient()
@@ -114,64 +114,6 @@ export const useMoveCard = () => {
           board.cardLists[destCardListIndex] = destCardList
 
           return board;
-
-          // return {
-          //   ...board,
-          //   cardLists: []
-            // cardLists: board.cardLists.map((list: any) => {
-  
-            //   if (list.id === sourceCardListId) {
-            //     const filtered = list.cards.filter((card: any) => {
-            //       if (card.id === cardId) {
-            //         movingCard = card
-            //         return false
-            //       }
-            //       return true
-            //     })
-
-            //     return {
-            //       ...list,
-            //       cards: filtered,
-            //     }
-            //   }
-
-            //   if (list.id === cardListId) {
-            //     const newCards = [...list.cards]
-
-            //     if (!movingCard && sourceCardListId === cardListId) {
-            //       const existing = list.cards.find(
-            //         (c: any) => c.id === cardId
-            //       )
-            //       movingCard = existing
-            //     }
-            //     console.log(`Card is: ${movingCard}`)
-            //     if (!movingCard) return list
-
-            //     let insertIndex = 0
-
-            //     if (prevCardId) {
-            //       insertIndex =
-            //         newCards.findIndex((c) => c.id === prevCardId) + 1
-            //     } else if (nextCardId) {
-            //       insertIndex = newCards.findIndex(
-            //         (c) => c.id === nextCardId
-            //       )
-            //     }
-
-            //     newCards.splice(insertIndex, 0, {
-            //       ...movingCard,
-            //       cardListId,
-            //     })
-
-            //     return {
-            //       ...list,
-            //       cards: newCards,
-            //     }
-            //   }
-
-            //   return list
-            // }),
-          // }
         }
       )
 
@@ -230,3 +172,71 @@ export const useCreateCard = () => {
     },
   });
 };
+
+export const useDeleteCard = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+
+    mutationFn: async ({
+      cardId,
+      cardListId,
+      boardId
+    } : { cardId: number, cardListId: number, boardId: number }) => {
+      return await deleteCard(cardId);
+    },
+
+    onMutate: async (variables: { cardId: number, cardListId: number, boardId: number }) => {
+
+      const { cardListId, boardId, cardId } = variables
+      await queryClient.cancelQueries({
+        queryKey: [QUERY_KEYS.BOARD, boardId],
+      });
+
+      const previousBoard: BoardData | undefined = queryClient.getQueryData([
+        QUERY_KEYS.BOARD,
+        boardId,
+      ]);
+
+      if (!previousBoard) {
+        return;
+      }
+      queryClient.setQueryData(
+  [QUERY_KEYS.BOARD, boardId],
+  (oldData: BoardData | undefined) => {
+    if (!oldData) return oldData;
+
+    return {
+      ...oldData,
+      cardLists: oldData.cardLists.map((cardList) => {
+
+        if (cardList.id !== cardListId) return cardList;
+
+        return {
+          ...cardList,
+          cards: cardList.cards.filter(
+            (card) => card.id !== cardId
+          ),
+        };
+      }),
+    };
+  }
+);
+      return { previousBoard };
+    },
+
+    onError: (_err, boardId, context) => {
+      queryClient.setQueryData(
+        [QUERY_KEYS.BOARD, boardId],
+        context?.previousBoard
+      );
+    },
+
+    onSettled: (_data, _err, boardId) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.BOARD, boardId]
+      });
+    },
+
+  });
+}

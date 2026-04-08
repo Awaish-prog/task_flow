@@ -1,11 +1,11 @@
 import { Paper, Stack, Box } from "@mui/material";
 import EditableField from "./ui/EditableField";
 import type { Card as CardType } from "../types/Types";
-import { useUpdateCard } from "../api/cards/query";
+import { useDeleteCard, useUpdateCard } from "../api/cards/query";
 
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-// import { Draggable } from "react-beautiful-dnd";
 import { Draggable } from "@hello-pangea/dnd";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 export default function Card({
   id,
@@ -19,6 +19,7 @@ export default function Card({
   index: number
 }) {
   const updateCardMutation = useUpdateCard();
+  const deleteCard = useDeleteCard()
 
 
   if (!card) return null;
@@ -41,6 +42,11 @@ export default function Card({
     });
   };
 
+
+  const handleCardDelete = () => {
+    deleteCard.mutateAsync({ cardListId: card.cardListId, boardId, cardId: card.id });
+  }
+
   return (
   <Draggable draggableId={card.id.toString()} index={index}>
     {(provided, snapshot) => (
@@ -54,7 +60,7 @@ export default function Card({
             snapshot.isDragging ? "shadow-lg" : ""
           }`}
         >
-          <div className="text-1xl flex flex-col gap-1">
+          <div className="text-[18px] flex flex-col gap-1 group/card">
             <EditableField value={card.name} onSave={handleUpdateName} />
 
             {card.description && (
@@ -62,12 +68,12 @@ export default function Card({
                 <EditableField value={card.description} onSave={handleUpdateDescription} />
               </div>
             )}
-
-            {
-              card.orderKey && (
-                <p>{card.orderKey}, id: {card.id}</p>
-              )
-            }
+            <button
+              className="p-1 rounded bg-gray-300 w-[30px] flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity hover:bg-red-100 cursor-pointer"
+              onClick={handleCardDelete}
+            >
+              <DeleteOutlineIcon className="text-red-500" fontSize="small" titleAccess="Delete card" />
+            </button>
           </div>
         </div>
       </div>

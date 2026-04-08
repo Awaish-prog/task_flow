@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createBoard, getBoardById, getBoards, updateBoard } from './apis'
+import { createBoard, deleteBoard, getBoardById, getBoards, updateBoard } from './apis'
 import { QUERY_KEYS } from '../queryKeys'
 import type { Board } from '../../types/Types'
 
@@ -47,3 +47,43 @@ export const useCreateBoard = () => {
     },
   });
 };
+
+export const useDeleteBoard = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+
+    mutationFn: deleteBoard,
+
+    onMutate: async (boardId: number) => {
+      await queryClient.cancelQueries({
+        queryKey: [QUERY_KEYS.BOARD, boardId],
+      });
+
+      const previousBoard = queryClient.getQueryData([
+        QUERY_KEYS.BOARD,
+        boardId,
+      ]);
+
+      queryClient.removeQueries({
+        queryKey: [QUERY_KEYS.BOARD, boardId],
+      });
+
+      return { previousBoard };
+    },
+
+    onError: (_err, boardId, context) => {
+      queryClient.setQueryData(
+        [QUERY_KEYS.BOARD, boardId],
+        context?.previousBoard
+      );
+    },
+
+    onSettled: (_data, _err, boardId) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.BOARDS],
+      });
+    },
+
+  });
+}

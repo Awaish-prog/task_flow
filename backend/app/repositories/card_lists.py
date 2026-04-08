@@ -15,7 +15,7 @@ class CardListRepository(BaseRepository[CardList]):
         return result.scalar_one_or_none()
     
     async def delete(self, db: AsyncSession, id: int) -> bool:
-        card_list = await db.get(CardList, id)
+        card_list = await self.get(db, id)
 
         if not card_list:
             return False

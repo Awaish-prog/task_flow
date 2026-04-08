@@ -25,7 +25,6 @@ function App() {
   const [open, setOpen] = useState(false);
   const [newBoardName, setNewBoardName] = useState("");
 
-  // Set first board as default
   useEffect(() => {
     if (boards.length > 0 && !selectedBoardId) {
       setSelectedBoardId(boards[0].id);
@@ -70,58 +69,64 @@ function App() {
         </FormControl>
       </div>
 
-      {/* New Board Button */}
       <button
         onClick={() => setOpen(true)}
-        className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-sm font-medium transition"
+        className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-sm font-medium transition cursor-pointer"
       >
         + New Board
       </button>
     </div>
+    
+   <Dialog
+  open={open}
+  onClose={() => setOpen(false)}
+  maxWidth="sm"
+  fullWidth
+  PaperProps={{
+    sx: {
+      borderRadius: 4,
+      px: 3,
+      py: 2.5,
+    },
+  }}
+>
+  <DialogTitle
+    sx={{
+      fontWeight: 600,
+      fontSize: "20px",
+      pb: 1,
+    }}
+  >
+    Create New Board
+  </DialogTitle>
 
-    {/* Dialog */}
-    <Dialog
-      open={open}
-      onClose={() => setOpen(false)}
-      PaperProps={{
-        sx: {
-          borderRadius: 12,
-          p: 1,
-        },
-      }}
+  <DialogContent sx={{ pt: 1 }}>
+    <input
+      autoFocus
+      placeholder="Enter board name..."
+      value={newBoardName}
+      onChange={(e) => setNewBoardName(e.target.value)}
+      className="w-full mt-3 px-4 py-2.5 border border-gray-300 rounded-md text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+    />
+  </DialogContent>
+
+  <DialogActions className="px-1 pt-4 flex justify-end gap-2">
+    <button
+      onClick={() => setOpen(false)}
+      className="text-sm px-3 py-1.5 rounded-md text-gray-600 hover:bg-gray-100 transition cursor-pointer"
     >
-      <DialogTitle sx={{ fontWeight: 600 }}>
-        Create New Board
-      </DialogTitle>
+      Cancel
+    </button>
 
-      <DialogContent>
-        <input
-          autoFocus
-          placeholder="Board name"
-          value={newBoardName}
-          onChange={(e) => setNewBoardName(e.target.value)}
-          className="w-full mt-2 px-3 py-2 border rounded-sm text-sm outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </DialogContent>
-
-      <DialogActions className="px-4 pb-3">
-        <button
-          onClick={() => setOpen(false)}
-          className="text-sm text-gray-600 hover:text-black"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleCreateBoard}
-          disabled={createBoardMutation.isPending}
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1.5 rounded-sm"
-        >
-          Create
-        </button>
-      </DialogActions>
-    </Dialog>
-
-    {/* Board */}
+    <button
+      onClick={handleCreateBoard}
+      disabled={createBoardMutation.isPending}
+      className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-1.5 rounded-md shadow-sm disabled:opacity-50 cursor-pointer"
+    >
+      Create
+    </button>
+  </DialogActions>
+</Dialog>
     {selectedBoardId && (
       <div className="mt-3">
         <Board boardId={selectedBoardId} />
