@@ -14,11 +14,7 @@ class CardListRepository(BaseRepository[CardList]):
         result = await db.execute(select(self.model).where(self.model.id == id).options(selectinload(CardList.cards)))
         return result.scalar_one_or_none()
     
-    async def delete(self, db: AsyncSession, id: int) -> bool:
-        card_list = await self.get(db, id)
-
-        if not card_list:
-            return False
+    async def delete(self, db: AsyncSession, card_list: CardList) -> bool:
 
         for card in card_list.cards:
             card.soft_delete()

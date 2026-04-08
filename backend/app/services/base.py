@@ -1,5 +1,6 @@
 from typing import TypeVar, Generic, Type
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.exceptions.handlers import NotFoundException
 
 ModelType = TypeVar("ModelType")
 CreateSchemaType = TypeVar("CreateSchemaType")
@@ -10,7 +11,11 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.repository = repository
 
     async def get(self, db: AsyncSession, id: int):
-        return await self.repository.get(db, id)
+        db_obj = await self.repository.get(db, id)
+        if not db_obj:
+            raise NotFoundException(self.repository.model.__name__, id)
+        
+        return db_obj
 
     async def get_all(self, db: AsyncSession):
         return await self.repository.get_all(db)
@@ -26,7 +31,7 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ):
         db_obj = await self.repository.get(db, id)
         if not db_obj:
-            return None
+            raise NotFoundException(self.repository.model.__name__, id)
 
         return await self.repository.update(
             db,
@@ -34,5 +39,10 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             obj_in.model_dump(exclude_unset=True)
         )
 
-    async def delete(self, db: AsyncSession, id: int):
-        return await self.repository.delete(db, id)
+    async def delete(self, db: AsyncSession, id: int) -> None:
+        obj = await self.get(db, id)
+
+        if not obj:
+            raise NotFoundException(self.repository.model.__name__, id)
+
+        await self.repository.delete(db, obj)

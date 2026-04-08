@@ -5,6 +5,7 @@ from app.api.dependencies import require_auth
 from app.db.base import Base
 from app.db.database import engine
 from app.repositories.filters import _add_soft_delete_filter
+from app.exceptions.handlers import register_exception_handlers
 
 def get_application() -> FastAPI:
 
@@ -22,6 +23,8 @@ def get_application() -> FastAPI:
     @application.on_event("startup")
     async def on_startup():
         await init_db()
+        
+    register_exception_handlers(application)
 
     return application
 

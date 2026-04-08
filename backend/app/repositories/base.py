@@ -3,8 +3,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.models.boards import Board
-
 ModelType = TypeVar("ModelType")
 
 class BaseRepository(Generic[ModelType]):
@@ -12,9 +10,11 @@ class BaseRepository(Generic[ModelType]):
         self.model = model
 
     async def get(self, db: AsyncSession, id: int) -> Optional[ModelType]:
-        result = await db.execute(select(self.model).where(self.model.id == id))
+        result = await db.execute(
+            select(self.model).where(self.model.id == id)
+        )
         return result.scalar_one_or_none()
-    
+
     async def get_with_lock(self, db: AsyncSession, id: int) -> Optional[ModelType]:
         result = await db.execute(
             select(self.model)
@@ -48,11 +48,6 @@ class BaseRepository(Generic[ModelType]):
         await db.refresh(db_obj)
         return db_obj
 
-    async def delete(self, db: AsyncSession, id: int) -> bool:
-        obj = await self.get(db, id)
-        if not obj:
-            return False
-        
+    async def delete(self, db: AsyncSession, obj: ModelType) -> None:
         obj.soft_delete()
         await db.commit()
-        return True
