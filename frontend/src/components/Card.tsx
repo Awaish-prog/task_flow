@@ -38,7 +38,7 @@ export default function Card({
       id,
       description,
       boardId,
-      name: card.name,
+      name: card.cardName,
     });
   };
 
@@ -61,7 +61,7 @@ export default function Card({
           }`}
         >
           <div className="text-[18px] flex flex-col gap-1 group/card">
-            <EditableField value={card.name} onSave={handleUpdateName} />
+            <EditableField value={card.cardName} onSave={handleUpdateName} />
 
             {card.description && (
               <div className="text-gray-500 leading-relaxed">

@@ -70,7 +70,7 @@ export default function CardList({
     {/* Header */}
     <div className="text-[22px] px-1 py-1 ml-2 flex justify-between items-center group/card-list gap-2">
     <div className="w-full">
-      <EditableField value={cardList.name} onSave={handleSave} />
+      <EditableField value={cardList.cardListName} onSave={handleSave} />
       </div>
       <button
               className="p-1 rounded hover:bg-red-100 bg-gray-300 w-[30px] opacity-0 group-hover/card-list:opacity-100 transition-opacity flex justify-center items-center cursor-pointer"

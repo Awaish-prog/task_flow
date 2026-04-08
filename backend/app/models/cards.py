@@ -8,7 +8,7 @@ class Card(Base, SoftDeleteMixin):
     __tablename__ = "cards"
     
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
+    card_name = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=True)
     order_key = Column(String, nullable=False)
     card_list_id = Column(Integer, ForeignKey("card_lists.id"))

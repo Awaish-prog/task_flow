@@ -14,7 +14,7 @@ class CardOrderService(CardService):
         key = generate_key_between(last_key, None)
  
         new_card = CardCreate(
-            name= obj_in.name,
+            card_name= obj_in.card_name,
             description= obj_in.description,
             order_key= key,
             card_list_id= obj_in.card_list_id

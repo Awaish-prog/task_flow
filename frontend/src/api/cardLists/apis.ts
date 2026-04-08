@@ -15,14 +15,14 @@ export const createCardList = (
   boardId: number,
   name: string
 ): Promise<CardListData> => {
-  return apiClient.post(cardListUrl, { boardId, name });
+  return apiClient.post(cardListUrl, { boardId, cardListName: name });
 };
 
 export const updateCardList = (
   id: number,
   name: string
 ): Promise<CardList> => {
-  return apiClient.put(`${cardListUrl}/${id}`, { name });
+  return apiClient.put(`${cardListUrl}/${id}`, { cardListName: name });
 };
 
 export const deleteCardList = (id: number): Promise<void> => {

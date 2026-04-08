@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Board from "./components/Board";
 import { useBoards, useCreateBoard } from "./api/boards/query";
+import { Toaster } from "react-hot-toast";
 
 import {
   Box,
@@ -43,6 +44,7 @@ function App() {
 
   return (
   <div className="p-4">
+    <Toaster position="top-right" reverseOrder={false} />
     
     {/* Top Bar */}
     <div className="flex items-center justify-end gap-2 mb-4 px-1">
@@ -62,7 +64,7 @@ function App() {
             </MenuItem>
             {boards.map((board: any) => (
               <MenuItem key={board.id} value={board.id}>
-                {board.name}
+                {board.boardName}
               </MenuItem>
             ))}
           </Select>

@@ -12,14 +12,14 @@ export const getBoardById = (id: number): Promise<BoardData> => {
 };
 
 export const createBoard = (name: string): Promise<BoardData> => {
-  return apiClient.post(boardUrl, { name });
+  return apiClient.post(boardUrl, { boardName: name });
 };
 
 export const updateBoard = (
   id: number,
   name: string
 ): Promise<BoardData> => {
-  return apiClient.put(`${boardUrl}/${id}`, { name });
+  return apiClient.put(`${boardUrl}/${id}`, { boardName: name });
 };
 
 export const deleteBoard = (id: number): Promise<void> => {

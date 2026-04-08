@@ -6,7 +6,7 @@ class BoardBase(BaseModel):
     id: int
 
 class BoardUpdate(BaseModel):
-    name: str = Field(..., max_length=15, min_length=3)
+    board_name: str = Field(..., max_length=15, min_length=3)
     
 class BoardApi(BoardBase, BoardUpdate):
     pass

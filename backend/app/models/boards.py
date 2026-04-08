@@ -7,6 +7,6 @@ class Board(Base, SoftDeleteMixin):
     __tablename__ = "boards"
     
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
+    board_name = Column(String, nullable=False, unique=True)
     
     card_lists = relationship("CardList", back_populates="board")

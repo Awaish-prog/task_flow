@@ -9,7 +9,7 @@ do
     -H "accept: application/json" \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
-    -d "{\"name\": \"$name\"}"
+    -d "{\"board_name\": \"$name\"}"
 
   echo -e "\n---\n"
 done
@@ -23,7 +23,7 @@ do
     -H "accept: application/json" \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
-    -d "{\"name\": \"$name\", \"board_id\": 1}"
+    -d "{\"card_list_name\": \"$name\", \"board_id\": 1}"
 
   echo -e "\n---\n"
 done
@@ -35,7 +35,7 @@ do
     -H "accept: application/json" \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
-    -d "{\"name\": \"$name\", \"board_id\": 2}"
+    -d "{\"card_list_name\": \"$name\", \"board_id\": 2}"
 
   echo -e "\n---\n"
 done
@@ -60,7 +60,7 @@ do
       -H "accept: application/json" \
       -H "Authorization: Bearer $TOKEN" \
       -H "Content-Type: application/json" \
-      -d "{\"name\": \"$name\", \"description\": \"des\", \"card_list_id\": $list_id}"
+      -d "{\"card_name\": \"$name\", \"description\": \"des\", \"card_list_id\": $list_id}"
 
     echo -e "\n--- card created: $name (list $list_id) ---\n"
   done

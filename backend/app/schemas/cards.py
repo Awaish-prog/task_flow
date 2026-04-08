@@ -5,7 +5,7 @@ class CardBase(BaseModel):
     id: int
     
 class CardUpdate(BaseModel):
-    name: str = Field(..., max_length=15, min_length=3)
+    card_name: str = Field(..., max_length=15, min_length=3)
     description: str = Field(..., max_length=50, min_length=3)
     card_list_id: int
     

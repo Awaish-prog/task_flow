@@ -21,6 +21,7 @@ import {
 } from "@hello-pangea/dnd";
 import { useMoveCard } from "../api/cards/query";
 import CardList from "./CardList";
+import BoardLoader from "./BoardLoader";
 
 export default function Board({ boardId }: { boardId: number }) {
   const { data: board, isLoading } = useBoard(boardId);
@@ -32,7 +33,7 @@ export default function Board({ boardId }: { boardId: number }) {
   const [isAdding, setIsAdding] = useState(false);
   const [listName, setListName] = useState("");
 
-  if (isLoading || !board) return <div>Loading...</div>;
+  if (isLoading || !board) return <BoardLoader />;
 
   const handleUpdateName = (name: string) => {
     updateBoardMutation.mutate({ id: board.id, name });
@@ -96,7 +97,7 @@ export default function Board({ boardId }: { boardId: number }) {
       <div className="flex items-center justify-between px-1 group">
     <h1 className="text-5xl font-semibold text-gray-800 flex items-center gap-3 group">
   <div className="flex items-center">
-    <EditableField value={board.name} onSave={handleUpdateName} />
+    <EditableField value={board.boardName} onSave={handleUpdateName} />
   </div>
 
   <button

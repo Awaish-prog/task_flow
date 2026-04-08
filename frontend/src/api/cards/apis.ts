@@ -17,7 +17,7 @@ export const createCard = (
   name: string,
   description: string
 ): Promise<Card> => {
-  return apiClient.post(cardUrl, { cardListId, name, description });
+  return apiClient.post(cardUrl, { cardListId, cardName: name, description });
 };
 
 export const updateCard = (
@@ -25,7 +25,7 @@ export const updateCard = (
   name: string,
   description: string
 ): Promise<Card> => {
-  return apiClient.put(`${cardUrl}/${id}`, { name, description });
+  return apiClient.put(`${cardUrl}/${id}`, { cardName: name, description });
 };
 
 export const deleteCard = (id: number): Promise<void> => {

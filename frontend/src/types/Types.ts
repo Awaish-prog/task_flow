@@ -1,6 +1,6 @@
 export interface Card {
   id: number;
-  name: string;
+  cardName: string;
   description: string;
   cardListId: number
   orderKey: string | null
@@ -8,7 +8,7 @@ export interface Card {
 
 export interface CardList {
   id: number;
-  name: string;
+  cardListName: string;
   boardId: number
 }
 
@@ -18,7 +18,7 @@ export interface CardListData extends CardList {
 
 export interface Board {
   id: number;
-  name: string;
+  boardName: string;
 }
 
 export interface BoardData extends Board {
