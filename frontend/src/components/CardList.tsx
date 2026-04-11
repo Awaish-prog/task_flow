@@ -65,22 +65,21 @@ export default function CardList({
   }
 
     return (
-  <div className="w-[90vw] max-w-[340px] max-h-[80vh] flex flex-col bg-gray-100 rounded-sm p-1 flex-shrink-0">
+  <div className="w-[90vw] max-w-[280px] flex flex-col bg-gray-100 rounded-sm p-1 flex-shrink-0">
     
-    {/* Header */}
-    <div className="text-[22px] px-1 py-1 ml-2 flex justify-between items-center group/card-list gap-2">
-    <div className="w-full">
-      <EditableField value={cardList.cardListName} onSave={handleSave} />
-      </div>
-      <button
-              className="p-1 rounded hover:bg-red-100 bg-gray-300 w-[30px] opacity-0 group-hover/card-list:opacity-100 transition-opacity flex justify-center items-center cursor-pointer"
-              onClick={handleCardListDelete}
-            >
-              <DeleteOutlineIcon className="text-red-500" fontSize="small" titleAccess="Delete card list" />
-            </button>
-    </div>
+   <div className="text-[20px] px-1 py-1 ml-2 flex items-center group/card-list gap-2 w-full">
+  <div className="flex-1 min-w-0">
+    <EditableField value={cardList.cardListName} onSave={handleSave} />
+  </div>
 
-    {/* Cards */}
+  <button
+    className="p-1 rounded hover:bg-red-100 bg-gray-200 w-[23px] h-[23px] opacity-0 group-hover/card-list:opacity-100 transition-opacity flex justify-center items-center cursor-pointer shrink-0 mr-2"
+    onClick={handleCardListDelete}
+  >
+    <DeleteOutlineIcon className="text-red-500" sx={{ fontSize: 17 }} />
+  </button>
+</div>
+
     <Droppable droppableId={cardList.id.toString()}>
       {(provided) => (
         <div
@@ -102,7 +101,6 @@ export default function CardList({
       )}
     </Droppable>
 
-    {/* Add Card */}
     <div className="mt-2">
       {isAdding ? (
         <div className="bg-white rounded-sm p-2 shadow-sm">

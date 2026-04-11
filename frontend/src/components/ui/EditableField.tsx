@@ -24,25 +24,25 @@ const EditableField = ({ value, onSave }: EditableFieldProps) => {
   }
 
   return isEditing ? (
-  <div className="flex gap-2 items-center">
-    <input
-      className="flex-1 min-w-0 px-2 py-1 border rounded-sm outline-none focus:ring-2 focus:ring-blue-500"
-      value={fieldValue}
-      onChange={(e) => setFieldValue(e.target.value)}
-      autoFocus
-    />
+  <div className="flex gap-2 items-center w-full min-w-0">
+  <input
+    className="flex-1 min-w-0 px-2 py-1 border rounded-sm outline-none focus:ring-2 focus:ring-blue-500"
+    value={fieldValue}
+    onChange={(e) => setFieldValue(e.target.value)}
+    autoFocus
+  />
     <button
     onClick={handleSave}
-    className="text-green-600 rounded hover:text-green-700 bg-gray-300 p-1 max-h-[40px] flex items-center cursor-pointer"
+    className="shrink-0 text-green-600 rounded hover:text-green-700 bg-gray-200 p-1 w-[23px] h-[23px] flex items-center cursor-pointer hover:bg-gray-300"
   >
-    <CheckIcon fontSize="small" />
+    <CheckIcon sx={{ fontSize: 15 }} />
   </button>
 
   <button
     onClick={handleCancel}
-    className="text-red-600 rounded hover:text-red-700 bg-gray-300 p-1 max-h-[40px] flex items-center rounded cursor-pointer"
+    className="shrink-0 text-red-600 rounded hover:text-red-700 bg-gray-200 p-1 w-[23px] h-[23px] flex items-center rounded cursor-pointer hover:bg-gray-300"
   >
-    <CloseIcon fontSize="small" />
+    <CloseIcon sx={{ fontSize: 15 }} />
   </button>
   </div>
 ) : (
@@ -56,9 +56,9 @@ const EditableField = ({ value, onSave }: EditableFieldProps) => {
 
     <button
     onClick={handleCancel}
-    className="opacity-0 group-hover:opacity-100 text-gray-700 bg-gray-300 p-1 max-h-[40px] flex items-center rounded cursor-pointer"
+    className="opacity-0 group-hover:opacity-100 text-gray-700 bg-gray-200 p-1 w-[23px] h-[23px] flex items-center rounded cursor-pointer hover:bg-gray-300"
   >
-    <EditIcon fontSize="small" />
+    <EditIcon sx={{ fontSize: 15 }} />
   </button>
   </div>
 );

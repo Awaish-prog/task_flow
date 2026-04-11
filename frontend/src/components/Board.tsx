@@ -95,16 +95,16 @@ export default function Board({ boardId }: { boardId: number }) {
     <div className="flex flex-col gap-4">
 
       <div className="flex items-center justify-between px-1 group">
-    <h1 className="text-5xl font-semibold text-gray-800 flex items-center gap-3 group">
+    <h1 className="text-4xl font-semibold text-gray-800 flex items-center gap-3 group">
   <div className="flex items-center">
     <EditableField value={board.boardName} onSave={handleUpdateName} />
   </div>
 
   <button
-    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded flex items-center bg-gray-300 hover:bg-red-100 cursor-pointer"
+    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded flex items-center bg-gray-200 hover:bg-red-100 cursor-pointer w-[23px] h-[23px] justify-center"
     onClick={handleBoardDelete}
   >
-    <DeleteOutlineIcon fontSize="small" className="text-red-500" titleAccess="Delete board" />
+    <DeleteOutlineIcon sx={{ fontSize: 17 }} className="text-red-500" titleAccess="Delete board" />
   </button>
 </h1>
   </div>

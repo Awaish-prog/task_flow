@@ -60,7 +60,7 @@ export default function Card({
             snapshot.isDragging ? "shadow-lg" : ""
           }`}
         >
-          <div className="text-[18px] flex flex-col gap-1 group/card">
+          <div className="text-[15px] flex flex-col gap-1 group/card">
             <EditableField value={card.cardName} onSave={handleUpdateName} />
 
             {card.description && (
@@ -69,10 +69,10 @@ export default function Card({
               </div>
             )}
             <button
-              className="p-1 rounded bg-gray-300 w-[30px] flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity hover:bg-red-100 cursor-pointer"
+              className="p-1 rounded bg-gray-200 w-[23px] h-[23px] flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity hover:bg-red-100 cursor-pointer"
               onClick={handleCardDelete}
             >
-              <DeleteOutlineIcon className="text-red-500" fontSize="small" titleAccess="Delete card" />
+              <DeleteOutlineIcon className="text-red-500" sx={{ fontSize: 17 }} titleAccess="Delete card" />
             </button>
           </div>
         </div>
