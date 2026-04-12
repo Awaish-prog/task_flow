@@ -1,6 +1,6 @@
 from fastapi import Request, HTTPException, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from fastapi.exceptions import RequestValidationError
 
 from app.exceptions.response import error_response
@@ -40,6 +40,24 @@ def register_exception_handlers(app):
     @app.exception_handler(HTTPException)
     async def http_exception_handler(request: Request, exc: HTTPException):
         return create_error_response(exc.status_code, exc.detail)
+    
+    
+    @app.exception_handler(IntegrityError)
+    async def unique_constraint_handler(request: Request, exc: IntegrityError):
+        error_message = str(exc.orig).lower()
+
+        if "unique" in error_message:
+            message = "Entity already exists"
+
+            return create_error_response(
+                status.HTTP_409_CONFLICT,
+                message
+            )
+
+        return create_error_response(
+            status.HTTP_400_BAD_REQUEST,
+            "Database integrity error"
+        )
 
     @app.exception_handler(SQLAlchemyError)
     async def db_exception_handler(request: Request, exc: SQLAlchemyError):

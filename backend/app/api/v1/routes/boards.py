@@ -13,12 +13,12 @@ async def read_boards(db: DBDep, board_service: BoardServiceDep) -> List[BoardAp
 async def read_board(board_id: int, db: DBDep, board_service: BoardServiceDep) -> Board:
     return await board_service.get(db, board_id)
 
-@router.post("/", response_model=BoardUpdate)
-async def create_board(board: BoardUpdate, db: DBDep, board_service: BoardServiceDep) -> BoardUpdate:
+@router.post("/", response_model=BoardApi)
+async def create_board(board: BoardUpdate, db: DBDep, board_service: BoardServiceDep) -> BoardApi:
     return await board_service.create(db, board)
 
-@router.put("/{board_id}", response_model=BoardUpdate)
-async def update_board(board_id: int, board: BoardUpdate, db: DBDep, board_service: BoardServiceDep) -> BoardUpdate:
+@router.put("/{board_id}", response_model=BoardApi)
+async def update_board(board_id: int, board: BoardUpdate, db: DBDep, board_service: BoardServiceDep) -> BoardApi:
     return await board_service.update(db, board_id, board)
 
 @router.delete("/{board_id}", response_model=None)

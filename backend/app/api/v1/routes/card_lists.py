@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from typing import List
-from app.schemas.card_lists import CardList, CardListUpdate, CardListResponse
+from app.schemas.card_lists import CardList, CardListUpdate, CardListResponse, CardListCreate
 from app.api.dependencies import DBDep, CardListServiceDep
 
 router = APIRouter()
@@ -14,7 +14,7 @@ async def read_card_list(card_list_id: int, db: DBDep, card_list_service: CardLi
     return await card_list_service.get(db, card_list_id) 
 
 @router.post("/", response_model=CardListResponse)
-async def create_card_list(card_list: CardListUpdate, db: DBDep, card_list_service: CardListServiceDep) -> CardListResponse:
+async def create_card_list(card_list: CardListCreate, db: DBDep, card_list_service: CardListServiceDep) -> CardListResponse:
     return await card_list_service.create(db, card_list)
 
 @router.put("/{card_list_id}", response_model=CardList)

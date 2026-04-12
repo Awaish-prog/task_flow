@@ -7,12 +7,14 @@ class CardListBase(BaseModel):
     
 class CardListUpdate(BaseModel):
     card_list_name: str = Field(..., max_length=15, min_length=3)
-    board_id: int
     
-class CardListResponse(CardListBase, CardListUpdate):
-   pass
+class CardListCreate(CardListUpdate):
+    board_id: int
+   
+class CardListResponse(CardListBase, CardListCreate):
+    pass
 
-class CardList(CardListBase, CardListUpdate):
+class CardList(CardListResponse):
     cards: List[Card] = []
     
     model_config = ConfigDict(from_attributes=True)

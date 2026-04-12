@@ -17,18 +17,20 @@ import {
   DialogActions,
 } from "@mui/material";
 
+export const BOARD_ID_KEY = 'board_id';
 
 function App() {
   const { data: boards = [], isLoading } = useBoards();
   const createBoardMutation = useCreateBoard();
 
-  const [selectedBoardId, setSelectedBoardId] = useState<number | "">("");
+  const [selectedBoardId, setSelectedBoardId] = useState<number>(0);
   const [open, setOpen] = useState(false);
   const [newBoardName, setNewBoardName] = useState("");
 
   useEffect(() => {
     if (boards.length > 0 && !selectedBoardId) {
-      setSelectedBoardId(boards[0].id);
+      const boardIdInStorage: string | null = localStorage.getItem(BOARD_ID_KEY) 
+      setSelectedBoardId(boardIdInStorage ? Number(boardIdInStorage) : boards[0].id);
     }
   }, [boards, selectedBoardId]);
 
@@ -39,8 +41,13 @@ function App() {
 
     setNewBoardName("");
     setOpen(false);
-    setSelectedBoardId(newBoard.id);
+    setCurrentBoard(newBoard.id);
   };
+
+  const setCurrentBoard = (boardId: number) => {
+    setSelectedBoardId(boardId);
+    localStorage.setItem(BOARD_ID_KEY, boardId.toString());
+  }
 
   return (
   <div className="p-4">
@@ -54,7 +61,7 @@ function App() {
         <FormControl size="small">
           <Select
             value={selectedBoardId}
-            onChange={(e) => setSelectedBoardId(Number(e.target.value))}
+            onChange={(e) => setCurrentBoard(Number(e.target.value))}
             disabled={isLoading}
             displayEmpty
             className="min-w-[200px] bg-white rounded-sm text-sm"

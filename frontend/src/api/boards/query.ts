@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createBoard, deleteBoard, getBoardById, getBoards, updateBoard } from './apis'
 import { QUERY_KEYS } from '../queryKeys'
 import type { Board } from '../../types/Types'
+import { BOARD_ID_KEY } from '../../App'
 
 export const useBoard = (boardId: number) => {
   return useQuery({
@@ -65,14 +66,17 @@ export const useDeleteBoard = () => {
         boardId,
       ]);
 
-      queryClient.removeQueries({
-        queryKey: [QUERY_KEYS.BOARD, boardId],
-      });
+      console.log(`sending data: ${previousBoard}`)
 
       return { previousBoard };
     },
 
+    onSuccess: () => {
+      localStorage.removeItem(BOARD_ID_KEY);
+    },
+
     onError: (_err, boardId, context) => {
+      console.log(`running on error: ${context?.previousBoard}`)
       queryClient.setQueryData(
         [QUERY_KEYS.BOARD, boardId],
         context?.previousBoard
@@ -80,6 +84,7 @@ export const useDeleteBoard = () => {
     },
 
     onSettled: (_data, _err, boardId) => {
+      console.log(`Running settled`)
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.BOARDS],
       });
