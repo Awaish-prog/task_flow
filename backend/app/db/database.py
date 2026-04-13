@@ -9,10 +9,13 @@ DATABASE_URL = "postgresql+asyncpg://user:password@localhost:5432/app_db"
 
 engine = create_async_engine(
     DATABASE_URL,
-    echo=True,
+    echo=False,
+    pool_size=5,
+    max_overflow=10,
+    pool_pre_ping=True,
 )
 
-AsyncSessionLocal = sessionmaker(
+async_session_maker = sessionmaker(
     bind=engine,
     class_=AsyncSession,
     expire_on_commit=False,
@@ -20,7 +23,11 @@ AsyncSessionLocal = sessionmaker(
 
 
 async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
+    async with async_session_maker() as session:
+        try:
+            yield session
+        except Exception:
+            await session.rollback()
+            raise
         
 Database = Annotated[AsyncSession, Depends(get_db)]
