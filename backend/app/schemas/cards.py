@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional, Annotated
 
 name_type = Annotated[str, Field(min_length=3, max_length=30)]
-description_type = Annotated[str, Field(min_length=3, max_length=30)]
+description_type = Annotated[str, Field(min_length=3, max_length=60)]
 
 class CardBase(BaseModel):
     id: int
