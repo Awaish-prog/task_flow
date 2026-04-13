@@ -15,16 +15,20 @@ async def read_card(card_id: int, db: DBDep, card_service: CardServiceDep) -> Ca
 
 @router.post("/", response_model=Card)
 async def create_card(card: CardCreate, db: DBDep, card_service: CardOrderServiceDep) -> Card:
-    return await card_service.create(db, card)
+    async with db.begin():
+        return await card_service.create(db, card)
 
 @router.put("/{card_id}", response_model=Card)
 async def update_card(card_id: int, card: CardUpdate, db: DBDep, card_service: CardServiceDep) -> Card:
-    return await card_service.update(db, card_id, card)
+    async with db.begin():
+        return await card_service.update(db, card_id, card)
 
 @router.patch("/move/{card_id}", response_model=Card)
 async def update_card_order(card_id: int, card: CardOrderUpdate, db: DBDep, card_service: CardOrderServiceDep) -> Card:
-    return await card_service.update(db, card_id, card)
+    async with db.begin():
+        return await card_service.update(db, card_id, card)
 
 @router.delete("/{card_id}", response_model=None)
 async def delete_card(card_id: int, db: DBDep, card_service: CardServiceDep) -> None:
-    return await card_service.delete(db, card_id)
+    async with db.begin():
+        return await card_service.delete(db, card_id)

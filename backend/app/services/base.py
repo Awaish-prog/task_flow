@@ -21,9 +21,7 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return await self.repository.get_all(db)
 
     async def create(self, db: AsyncSession, obj_in: CreateSchemaType):
-        obj = await self.repository.create(db, obj_in.model_dump())
-        await db.commit()
-        return obj
+        return await self.repository.create(db, obj_in.model_dump())
     
     async def update(
         self,
@@ -35,13 +33,11 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if not db_obj:
             raise NotFoundException(self.repository.model.__name__, id)
 
-        obj = await self.repository.update(
+        return await self.repository.update(
             db,
             db_obj,
             obj_in.model_dump(exclude_unset=True)
         )
-        await db.commit()
-        return obj
 
     async def delete(self, db: AsyncSession, id: int) -> None:
         obj = await self.get(db, id)
@@ -50,4 +46,3 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             raise NotFoundException(self.repository.model.__name__, id)
 
         await self.repository.delete(db, obj)
-        await db.commit()

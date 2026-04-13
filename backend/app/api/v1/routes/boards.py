@@ -15,12 +15,15 @@ async def read_board(board_id: int, db: DBDep, board_service: BoardServiceDep) -
 
 @router.post("/", response_model=BoardRead)
 async def create_board(board: BoardUpdate, db: DBDep, board_service: BoardServiceDep) -> BoardRead:
-    return await board_service.create(db, board)
+    async with db.begin():
+        return await board_service.create(db, board)
 
 @router.put("/{board_id}", response_model=BoardRead)
 async def update_board(board_id: int, board: BoardUpdate, db: DBDep, board_service: BoardServiceDep) -> BoardRead:
-    return await board_service.update(db, board_id, board)
+    async with db.begin():
+        return await board_service.update(db, board_id, board)
 
 @router.delete("/{board_id}", response_model=None)
-async def read_board(board_id: int, db: DBDep, board_service: BoardServiceDep) -> None:
-    return await board_service.delete(db, board_id)
+async def delete_board(board_id: int, db: DBDep, board_service: BoardServiceDep) -> None:
+    async with db.begin():
+        return await board_service.delete(db, board_id)
