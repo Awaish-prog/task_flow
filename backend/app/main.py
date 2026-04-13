@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.router import api_router
-from app.api.dependencies import require_auth
+from app.auth.auth import require_auth
 from app.db.base import Base
 from app.db.database import engine
 from app.repositories.filters import _add_soft_delete_filter
