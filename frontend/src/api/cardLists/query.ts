@@ -67,21 +67,10 @@ export const useDeleteCardList = () => {
       return await deleteCardList(cardListId);
     },
 
-    onMutate: async (variables: { cardListId: number, boardId: number }) => {
+    onSuccess: (_, variables: { cardListId: number, boardId: number }) => {
 
       const { cardListId, boardId } = variables
-      await queryClient.cancelQueries({
-        queryKey: [QUERY_KEYS.BOARD, boardId],
-      });
 
-      const previousBoard: BoardData | undefined = queryClient.getQueryData([
-        QUERY_KEYS.BOARD,
-        boardId,
-      ]);
-
-      if (!previousBoard) {
-        return;
-      }
       queryClient.setQueryData(
     [QUERY_KEYS.BOARD, boardId],
     (oldData: BoardData | undefined) => {
@@ -95,21 +84,7 @@ export const useDeleteCardList = () => {
       };
     }
   );
-      return { previousBoard };
-    },
-
-    onError: (_err, boardId, context) => {
-      queryClient.setQueryData(
-        [QUERY_KEYS.BOARD, boardId],
-        context?.previousBoard
-      );
-    },
-
-    onSettled: (_data, _err, boardId) => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.BOARD, boardId]
-      });
-    },
+    }
 
   });
 }

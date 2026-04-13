@@ -44,7 +44,7 @@ export default function Card({
 
 
   const handleCardDelete = () => {
-    deleteCard.mutateAsync({ cardListId: card.cardListId, boardId, cardId: card.id });
+    deleteCard.mutateAsync({ boardId, cardId: card.id });
   }
 
   return (

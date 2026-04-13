@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createBoard, deleteBoard, getBoardById, getBoards, updateBoard } from './apis'
 import { QUERY_KEYS } from '../queryKeys'
-import type { Board } from '../../types/Types'
+import type { Board, BoardData } from '../../types/Types'
 import { BOARD_ID_KEY } from '../../App'
 
 export const useBoard = (boardId: number) => {
@@ -19,10 +19,31 @@ export const useUpdateBoard = () => {
     mutationFn: async ({ id, name }: { id: number; name: string }) => await updateBoard(id, name),
     onSuccess: (updatedBoard) => {
       queryClient.setQueryData(
-        [QUERY_KEYS.BOARD, updatedBoard.id],
-        updatedBoard
+      [QUERY_KEYS.BOARD, updatedBoard.id],
+      (oldData: BoardData) => {
+        if (!oldData) return oldData
+
+        return {
+          ...oldData,
+          boardName: updatedBoard.boardName,
+        }
+      }
+    )
+      queryClient.setQueryData(
+        [QUERY_KEYS.BOARDS],
+        (boards: Board[]) => {
+
+          if (!boards || !boards.length) return boards;
+
+          return boards.map((board) =>
+            board.id === updatedBoard.id
+            ? { ...board, boardName: updatedBoard.boardName }
+            : board
+          );
+
+        }
       )
-    },
+  }
   })
 }
 
@@ -56,39 +77,12 @@ export const useDeleteBoard = () => {
 
     mutationFn: deleteBoard,
 
-    onMutate: async (boardId: number) => {
-      await queryClient.cancelQueries({
-        queryKey: [QUERY_KEYS.BOARD, boardId],
-      });
-
-      const previousBoard = queryClient.getQueryData([
-        QUERY_KEYS.BOARD,
-        boardId,
-      ]);
-
-      console.log(`sending data: ${previousBoard}`)
-
-      return { previousBoard };
-    },
-
-    onSuccess: () => {
+    onSuccess: (_data, boardId) => {
       localStorage.removeItem(BOARD_ID_KEY);
-    },
-
-    onError: (_err, boardId, context) => {
-      console.log(`running on error: ${context?.previousBoard}`)
-      queryClient.setQueryData(
-        [QUERY_KEYS.BOARD, boardId],
-        context?.previousBoard
-      );
-    },
-
-    onSettled: (_data, _err, boardId) => {
-      console.log(`Running settled`)
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.BOARDS],
+      queryClient.setQueryData([QUERY_KEYS.BOARDS], (boards: Board[]) => {
+        return boards?.filter(board => board.id !== boardId);
       });
-    },
+    }
 
   });
 }

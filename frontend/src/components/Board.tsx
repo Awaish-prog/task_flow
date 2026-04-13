@@ -23,7 +23,7 @@ import { useMoveCard } from "../api/cards/query";
 import CardList from "./CardList";
 import BoardLoader from "./BoardLoader";
 
-export default function Board({ boardId }: { boardId: number }) {
+export default function Board({ boardId, setDefaultBoard }: { boardId: number, setDefaultBoard: (deletedBoardId: number) => void }) {
   const { data: board, isLoading } = useBoard(boardId);
   const updateBoardMutation = useUpdateBoard();
   const createCardListMutation = useCreateCardList();
@@ -86,8 +86,9 @@ export default function Board({ boardId }: { boardId: number }) {
     )
   }
 
-  const handleBoardDelete = () => {
-    deleteBoard.mutateAsync(boardId);
+  const handleBoardDelete = async () => {
+    await deleteBoard.mutateAsync(boardId);
+    setDefaultBoard(boardId);
   }
 
   return (

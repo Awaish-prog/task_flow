@@ -46,7 +46,13 @@ function App() {
 
   const setCurrentBoard = (boardId: number) => {
     setSelectedBoardId(boardId);
-    localStorage.setItem(BOARD_ID_KEY, boardId.toString());
+    boardId ? localStorage.removeItem(BOARD_ID_KEY) : localStorage.setItem(BOARD_ID_KEY, boardId.toString());
+  }
+
+  const selectDefaultBoard = (deletedBoardId: number) => {
+    console.log(`current boards: ${JSON.stringify(boards)}`);
+    const currentBoards = boards && boards.length ? boards.filter(board => board.id !== deletedBoardId) : [];
+    setCurrentBoard(currentBoards && currentBoards.length ? currentBoards[0].id : 0);
   }
 
   return (
@@ -136,11 +142,12 @@ function App() {
     </button>
   </DialogActions>
 </Dialog>
-    {selectedBoardId && (
+    {selectedBoardId ? (
       <div className="mt-3">
-        <Board boardId={selectedBoardId} />
+        <Board boardId={selectedBoardId} setDefaultBoard={selectDefaultBoard} />
       </div>
-    )}
+    ) :
+    <h1>Create a board</h1>}
   </div>
 );
 }

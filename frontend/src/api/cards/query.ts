@@ -86,45 +86,42 @@ export const useMoveCard = () => {
         boardId,
       ])
 
+      const initialBoard = structuredClone(previousBoard)
+
       queryClient.setQueryData(
-        [QUERY_KEYS.BOARD, boardId],
-        (board: BoardData | undefined) => {
-          if (!board) return board
+  [QUERY_KEYS.BOARD, boardId],
+  (board: BoardData | undefined) => {
+    if (!board) return board
 
-          const destCardListIndex: number = board.cardLists.findIndex(cardList => cardList.id === cardListId);          
-          const sourceCardListIndex: number = board.cardLists.findIndex(cardList => cardList.id === sourceCardListId);
+    const newBoard = structuredClone(board)
 
-          if (sourceCardListIndex === -1 || destCardListIndex === -1) {
-            return;
-          }
+    const destIndex = newBoard.cardLists.findIndex(cl => cl.id === cardListId)
+    const sourceIndex = newBoard.cardLists.findIndex(cl => cl.id === sourceCardListId)
 
-          const sourceCardList: CardListData = { ...board.cardLists[sourceCardListIndex] };
-          const destCardList: CardListData = { ...board.cardLists[destCardListIndex] };
+    if (destIndex === -1 || sourceIndex === -1) return board
 
-          const cardIndex = sourceCardList.cards.findIndex(card => card.id === cardId);
-          const card: Card | undefined = cardIndex !== -1 ? sourceCardList.cards.splice(cardIndex, 1)[0] : undefined;
+    const sourceList = newBoard.cardLists[sourceIndex]
+    const destList = newBoard.cardLists[destIndex]
 
-          if (!card) {
-            return;
-          }
+    const cardIndex = sourceList.cards.findIndex(c => c.id === cardId)
+    if (cardIndex === -1) return board
 
-          destCardList.cards.splice(destCardIndex, 0, card);
+    const [card] = sourceList.cards.splice(cardIndex, 1)
+    destList.cards.splice(destCardIndex, 0, card)
 
-          board.cardLists[sourceCardListIndex] = sourceCardList;
-          board.cardLists[destCardListIndex] = destCardList
+    return newBoard
+  }
+)
 
-          return board;
-        }
-      )
-
-      return { previousBoard }
+      return { initialBoard }
     },
 
     onError: (_err, variables, context) => {
-      if (context?.previousBoard) {
+      console.log(`Error handle board: ${JSON.stringify(context)}`)
+      if (context?.initialBoard) {
         queryClient.setQueryData(
           [QUERY_KEYS.BOARD, variables.boardId],
-          context.previousBoard
+          context.initialBoard
         )
       }
     },
@@ -180,27 +177,16 @@ export const useDeleteCard = () => {
 
     mutationFn: async ({
       cardId,
-      cardListId,
       boardId
-    } : { cardId: number, cardListId: number, boardId: number }) => {
+    } : { cardId: number, boardId: number }) => {
       return await deleteCard(cardId);
     },
 
-    onMutate: async (variables: { cardId: number, cardListId: number, boardId: number }) => {
 
-      const { cardListId, boardId, cardId } = variables
-      await queryClient.cancelQueries({
-        queryKey: [QUERY_KEYS.BOARD, boardId],
-      });
+    onSuccess: (_, variables: { cardId: number, boardId: number }) => {
 
-      const previousBoard: BoardData | undefined = queryClient.getQueryData([
-        QUERY_KEYS.BOARD,
-        boardId,
-      ]);
+      const { boardId, cardId } = variables
 
-      if (!previousBoard) {
-        return;
-      }
       queryClient.setQueryData(
   [QUERY_KEYS.BOARD, boardId],
   (oldData: BoardData | undefined) => {
@@ -209,8 +195,6 @@ export const useDeleteCard = () => {
     return {
       ...oldData,
       cardLists: oldData.cardLists.map((cardList) => {
-
-        if (cardList.id !== cardListId) return cardList;
 
         return {
           ...cardList,
@@ -222,21 +206,7 @@ export const useDeleteCard = () => {
     };
   }
 );
-      return { previousBoard };
-    },
-
-    onError: (_err, boardId, context) => {
-      queryClient.setQueryData(
-        [QUERY_KEYS.BOARD, boardId],
-        context?.previousBoard
-      );
-    },
-
-    onSettled: (_data, _err, boardId) => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.BOARD, boardId]
-      });
-    },
+    }
 
   });
 }
