@@ -21,4 +21,4 @@ class CardListRepository(BaseRepository[CardList]):
 
         card_list.soft_delete()
 
-        await db.commit()
+        await db.flush()

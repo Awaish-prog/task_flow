@@ -23,4 +23,4 @@ class BoardRepository(BaseRepository[Board]):
 
         board.soft_delete()
 
-        await db.commit()
+        await db.flush()

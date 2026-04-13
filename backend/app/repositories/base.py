@@ -30,7 +30,7 @@ class BaseRepository(Generic[ModelType]):
     async def create(self, db: AsyncSession, obj_data: dict) -> ModelType:
         obj = self.model(**obj_data)
         db.add(obj)
-        await db.commit()
+        await db.flush()
         await db.refresh(obj)
         return obj
 
@@ -44,10 +44,10 @@ class BaseRepository(Generic[ModelType]):
             if value is not None:
                 setattr(db_obj, field, value)
 
-        await db.commit()
+        await db.flush()
         await db.refresh(db_obj)
         return db_obj
 
     async def delete(self, db: AsyncSession, obj: ModelType) -> None:
         obj.soft_delete()
-        await db.commit()
+        await db.flush()

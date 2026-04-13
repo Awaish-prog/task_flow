@@ -20,7 +20,9 @@ class CardOrderService(CardService):
             card_list_id= obj_in.card_list_id
         )
 
-        return await self.repository.create(db, new_card.model_dump())
+        obj = await self.repository.create(db, new_card.model_dump())
+        await db.commit()
+        return obj
 
     async def update(
         self,
@@ -41,7 +43,6 @@ class CardOrderService(CardService):
             next_key = next_card.order_key if is_next_in_same_list else None
             
             card.order_key = generate_jittered_key_between(prev_key, next_key)
-            print(f'prev: {prev_key}, next: {next_key}, new: {card.order_key}')
             card.card_list_id = obj_in.card_list_id
             await db.flush()
             return card
