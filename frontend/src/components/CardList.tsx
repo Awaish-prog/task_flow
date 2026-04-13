@@ -1,4 +1,3 @@
-import { Paper, Stack, Button, TextField, Box } from "@mui/material";
 import { useState } from "react";
 import Card from "./Card";
 import EditableField from "./ui/EditableField";
@@ -10,21 +9,17 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 
 import {
-  DragDropContext,
-  Droppable,
-  type DropResult,
+  Droppable
 } from "@hello-pangea/dnd";
 
 export default function CardList({
   id,
   boardId,
   cardList,
-  index
 }: {
   id: number;
   boardId: number;
-  cardList: CardListData;
-  index: number
+  cardList: CardListData
 }) {
   const { mutate: updateCardListName } = useUpdateCardList();
   const { mutate: createCard } = useCreateCard();

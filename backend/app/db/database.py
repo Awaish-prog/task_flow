@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends
 import os
 
-DATABASE_URL = "postgresql+asyncpg://user:password@localhost:5432/mydb"
+DATABASE_URL = "postgresql+asyncpg://user:password@db:5432/app_db"
 
 engine = create_async_engine(
     DATABASE_URL,

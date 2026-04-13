@@ -1,22 +1,13 @@
-import { Stack, Box, Button, TextField, Paper } from "@mui/material";
 import { useState } from "react";
 import EditableField from "./ui/EditableField";
 import { useBoard, useDeleteBoard, useUpdateBoard } from "../api/boards/query";
 import { useCreateCardList } from "../api/cardLists/query";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
-
-// import { DragDropContext, type DropResult } from "react-beautiful-dnd";
-
-import { useQueryClient } from "@tanstack/react-query";
 import type { CardListData } from "../types/Types";
 
 import {
   DragDropContext,
-  Droppable,
   type DropResult,
 } from "@hello-pangea/dnd";
 import { useMoveCard } from "../api/cards/query";
@@ -113,11 +104,10 @@ export default function Board({ boardId, setDefaultBoard }: { boardId: number, s
       <div className="flex gap-3 overflow-x-auto pb-4">
         {board.cardLists.map((cardList, index) => (
           <CardList
-            key={cardList.id}
+            key={index}
             id={cardList.id}
             boardId={boardId}
             cardList={cardList}
-            index={index}
           />
         ))}
 

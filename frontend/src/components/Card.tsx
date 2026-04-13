@@ -1,9 +1,6 @@
-import { Paper, Stack, Box } from "@mui/material";
 import EditableField from "./ui/EditableField";
 import type { Card as CardType } from "../types/Types";
 import { useDeleteCard, useUpdateCard } from "../api/cards/query";
-
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { Draggable } from "@hello-pangea/dnd";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 

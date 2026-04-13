@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 export const showErrorToast = (message: string) => {
   const duration = 5000;
 
-  toast.custom((toastMessage) => (
+  toast.custom(() => (
     <div className={`relative w-80 bg-red-600 text-white p-4 rounded shadow-lg overflow-hidden`}>
       
       <div>{message}</div>

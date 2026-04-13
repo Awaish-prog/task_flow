@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import type { BoardData, Card, CardListData } from '../../types/Types'
+import type { BoardData, Card } from '../../types/Types'
 import { QUERY_KEYS } from '../queryKeys'
 import { createCard, deleteCard, moveCard, updateCard } from './apis'
 
