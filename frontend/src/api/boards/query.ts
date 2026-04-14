@@ -18,16 +18,17 @@ export const useUpdateBoard = () => {
     mutationFn: async ({ id, name }: { id: number; name: string }) => await updateBoard(id, name),
     onSuccess: (updatedBoard) => {
       queryClient.setQueryData(
-      [QUERY_KEYS.BOARD, updatedBoard.id],
-      (oldData: BoardData) => {
-        if (!oldData) return oldData
+        [QUERY_KEYS.BOARD, updatedBoard.id],
+        (board: BoardData) => {
+          if (!board) return board
 
-        return {
-          ...oldData,
-          boardName: updatedBoard.boardName,
+          return {
+            ...board,
+            boardName: updatedBoard.boardName,
+          }
         }
-      }
-    )
+      )
+
       queryClient.setQueryData(
         [QUERY_KEYS.BOARDS],
         (boards: Board[]) => {
@@ -42,7 +43,7 @@ export const useUpdateBoard = () => {
 
         }
       )
-  }
+    }
   })
 }
 
@@ -81,6 +82,5 @@ export const useDeleteBoard = () => {
         return boards?.filter(board => board.id !== boardId);
       });
     }
-
   });
 }

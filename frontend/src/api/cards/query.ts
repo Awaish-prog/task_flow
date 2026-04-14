@@ -9,8 +9,7 @@ export const useUpdateCard = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({id, name, description, boardId}: { id: number, name: string, description: string, boardId: number
-    }) => await updateCard(id, name, description),
+    mutationFn: async ({id, name, description, boardId}: { id: number, name: string, description: string, boardId: number}) => await updateCard(id, name, description),
 
     onSuccess: (updatedCard: Card, variables) => {
       const { boardId } = variables
@@ -91,29 +90,30 @@ export const useMoveCard = () => {
       const initialBoard = structuredClone(previousBoard)
 
       queryClient.setQueryData(
-  [QUERY_KEYS.BOARD, boardId],
-  (board: BoardData | undefined) => {
-    if (!board) return board
+        [QUERY_KEYS.BOARD, boardId],
+        (board: BoardData | undefined) => {
+          if (!board) return board
 
-    const newBoard = structuredClone(board)
+          const newBoard = structuredClone(board)
 
-    const destIndex = newBoard.cardLists.findIndex(cl => cl.id === cardListId)
-    const sourceIndex = newBoard.cardLists.findIndex(cl => cl.id === sourceCardListId)
+          const destIndex = newBoard.cardLists.findIndex(cardList => cardList.id === cardListId)
+          const sourceIndex = newBoard.cardLists.findIndex(cardList => cardList.id === sourceCardListId)
 
-    if (destIndex === -1 || sourceIndex === -1) return board
+          if (destIndex === -1 || sourceIndex === -1) return board
 
-    const sourceList = newBoard.cardLists[sourceIndex]
-    const destList = newBoard.cardLists[destIndex]
+          const sourceList = newBoard.cardLists[sourceIndex]
+          const destList = newBoard.cardLists[destIndex]
 
-    const cardIndex = sourceList.cards.findIndex(c => c.id === cardId)
-    if (cardIndex === -1) return board
+          const cardIndex = sourceList.cards.findIndex(card => card.id === cardId)
+          
+          if (cardIndex === -1) return board
 
-    const [card] = sourceList.cards.splice(cardIndex, 1)
-    destList.cards.splice(destCardIndex, 0, card)
+          const [card] = sourceList.cards.splice(cardIndex, 1)
+          destList.cards.splice(destCardIndex, 0, card)
 
-    return newBoard
-  }
-)
+          return newBoard
+        }
+      )
 
       return { initialBoard }
     },
@@ -134,7 +134,6 @@ export const useMoveCard = () => {
     },
   })
 }
-
 
 export const useCreateCard = () => {
   const queryClient = useQueryClient();
@@ -188,25 +187,23 @@ export const useDeleteCard = () => {
       const { boardId, cardId } = variables
 
       queryClient.setQueryData(
-  [QUERY_KEYS.BOARD, boardId],
-  (oldData: BoardData | undefined) => {
-    if (!oldData) return oldData;
+        [QUERY_KEYS.BOARD, boardId],
+        (board: BoardData | undefined) => {
+          if (!board) return board;
 
-    return {
-      ...oldData,
-      cardLists: oldData.cardLists.map((cardList) => {
+          return {
+            ...board,
+            cardLists: board.cardLists.map((cardList) => {
 
-        return {
-          ...cardList,
-          cards: cardList.cards.filter(
-            (card) => card.id !== cardId
-          ),
-        };
-      }),
-    };
-  }
-);
+            return {
+              ...cardList,
+              cards: cardList.cards.filter(
+                (card) => card.id !== cardId
+              )};
+            }),
+          };
+        }
+      );
     }
-
   });
 }

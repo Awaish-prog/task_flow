@@ -61,10 +61,7 @@ export const useDeleteCardList = () => {
 
   return useMutation({
 
-    mutationFn: async ({
-      cardListId,
-      boardId
-    } : { cardListId: number, boardId: number }) => {
+    mutationFn: async ({cardListId, boardId} : { cardListId: number, boardId: number }) => {
       return await deleteCardList(cardListId);
     },
 
@@ -73,19 +70,17 @@ export const useDeleteCardList = () => {
       const { cardListId, boardId } = variables
 
       queryClient.setQueryData(
-    [QUERY_KEYS.BOARD, boardId],
-    (oldData: BoardData | undefined) => {
-      if (!oldData) return oldData;
+        [QUERY_KEYS.BOARD, boardId],
+        (baord: BoardData | undefined) => {
+          if (!baord) return baord;
 
-      return {
-        ...oldData,
-        cardLists: oldData.cardLists.filter(
-          (cardList) => cardList.id !== cardListId
-        ),
-      };
+          return {
+          ...baord,
+          cardLists: baord.cardLists.filter(
+            (cardList) => cardList.id !== cardListId
+          )};
+        }
+      );
     }
-  );
-    }
-
   });
 }

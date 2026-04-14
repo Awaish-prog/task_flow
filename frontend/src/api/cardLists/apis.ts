@@ -2,30 +2,22 @@ import type { CardList, CardListData } from "../../modules/cardList/types.ts";
 import apiClient from "../apiClient";
 import { API_ROUTES } from "../apiUrl.ts";
 
-const cardListUrl: string = API_ROUTES.cardLists;
-
 export const getCardLists = (): Promise<CardList[]> => {
-  return apiClient.get(cardListUrl);
+  return apiClient.get(API_ROUTES.cardLists);
 };
 
 export const getCardListById = (id: number): Promise<CardListData> => {
-  return apiClient.get(`${cardListUrl}/${id}`);
+  return apiClient.get(`${API_ROUTES.cardLists}/${id}`);
 };
 
-export const createCardList = (
-  boardId: number,
-  name: string
-): Promise<CardListData> => {
-  return apiClient.post(cardListUrl, { boardId, cardListName: name });
+export const createCardList = (boardId: number, name: string): Promise<CardListData> => {
+  return apiClient.post(API_ROUTES.cardLists, { boardId, cardListName: name });
 };
 
-export const updateCardList = (
-  id: number,
-  name: string
-): Promise<CardList> => {
-  return apiClient.put(`${cardListUrl}/${id}`, { cardListName: name });
+export const updateCardList = (id: number, name: string): Promise<CardList> => {
+  return apiClient.put(`${API_ROUTES.cardLists}/${id}`, { cardListName: name });
 };
 
 export const deleteCardList = (id: number): Promise<void> => {
-  return apiClient.delete(`${cardListUrl}/${id}`);
+  return apiClient.delete(`${API_ROUTES.cardLists}/${id}`);
 };
