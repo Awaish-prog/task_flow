@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { useBoards } from "../api/boards/query.ts";
+import { useBoards } from "../../api/boards/query.ts";
 
 import { BoardSelector } from "./components/BoardSelector";
 import { CreateBoardDialog } from "./components/CreateBoardDialog";
 import { EmptyState } from "./components/EmptyState";
 import { useSelectedBoard } from "./hooks/useSelectedBoard";
-import Board from "../modules/board/Board.tsx";
+import Board from "../board/Board.tsx";
 
 function App() {
   const { data: boards = [], isLoading } = useBoards();

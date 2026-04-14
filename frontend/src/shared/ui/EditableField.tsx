@@ -28,35 +28,30 @@ const EditableField = ({ value, onSave }: EditableFieldProps) => {
     className="flex-1 min-w-0 px-2 py-1 border rounded-sm outline-none focus:ring-2 focus:ring-blue-500"
     value={fieldValue}
     onChange={(e) => setFieldValue(e.target.value)}
-    autoFocus
-  />
+    autoFocus/>
     <button
     onClick={handleSave}
-    className="shrink-0 text-green-600 rounded hover:text-green-700 bg-gray-200 p-1 w-[23px] h-[23px] flex items-center cursor-pointer hover:bg-gray-300"
-  >
+    className="shrink-0 text-green-600 rounded hover:text-green-700 bg-gray-200 p-1 w-[23px] h-[23px] flex items-center cursor-pointer hover:bg-gray-300">
     <CheckIcon sx={{ fontSize: 15 }} />
   </button>
 
   <button
     onClick={handleCancel}
-    className="shrink-0 text-red-600 rounded hover:text-red-700 bg-gray-200 p-1 w-[23px] h-[23px] flex items-center rounded cursor-pointer hover:bg-gray-300"
-  >
+    className="shrink-0 text-red-600 rounded hover:text-red-700 bg-gray-200 p-1 w-[23px] h-[23px] flex items-center rounded cursor-pointer hover:bg-gray-300">
     <CloseIcon sx={{ fontSize: 15 }} />
   </button>
   </div>
 ) : (
   <div
     className="flex items-center justify-between group cursor-pointer gap-8"
-    onClick={() => setIsEditing(true)}
-  >
+    onClick={() => setIsEditing(true)}>
     <span className="font-medium">
       {value}
     </span>
 
     <button
     onClick={handleCancel}
-    className="opacity-0 group-hover:opacity-100 text-gray-700 bg-gray-200 p-1 w-[23px] h-[23px] flex items-center rounded cursor-pointer hover:bg-gray-300"
-  >
+    className="opacity-0 group-hover:opacity-100 text-gray-700 bg-gray-200 p-1 w-[23px] h-[23px] flex items-center rounded cursor-pointer hover:bg-gray-300">
     <EditIcon sx={{ fontSize: 15 }} />
   </button>
   </div>

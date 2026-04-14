@@ -1,5 +1,5 @@
 import { FormControl, Select, MenuItem } from "@mui/material";
-import type { Board } from "../../modules/board/types.ts";
+import type { Board } from "../../board/types.ts";
 
 type Props = {
   boards: Board[];

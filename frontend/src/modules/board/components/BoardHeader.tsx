@@ -21,7 +21,7 @@ export const BoardHeader = ({ id, name, onDeleted }: { id: number; name: string;
         <EditableField value={name} onSave={handleUpdate} />
         <button
           onClick={handleDelete}
-          className="opacity-0 group-hover:opacity-100 transition p-1 rounded bg-gray-200 hover:bg-red-100 w-[23px] h-[23px] flex items-center justify-center"
+          className="opacity-0 group-hover:opacity-100 transition p-1 rounded bg-gray-200 hover:bg-red-100 w-[23px] h-[23px] flex items-center justify-center cursor-pointer"
         >
           <DeleteOutlineIcon sx={{ fontSize: 17 }} className="text-red-500" />
         </button>

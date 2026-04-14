@@ -20,11 +20,11 @@ export const AddListCard = ({ boardId }: { boardId: number }) => {
               <button
                 onClick={create}
                 disabled={isPending || !name.trim()}
-                className="bg-blue-600 text-white px-4 py-1.5 rounded-md text-sm disabled:opacity-50"
+                className="bg-blue-600 text-white px-4 py-1.5 rounded-md text-sm disabled:opacity-50 cursor-pointer"
               >
                 Add List
               </button>
-              <button onClick={() => setIsAdding(false)} className="text-sm px-3 py-1.5 rounded-md">
+              <button onClick={() => setIsAdding(false)} className="text-sm px-3 py-1.5 rounded-md cursor-pointer">
                 Cancel
               </button>
             </div>

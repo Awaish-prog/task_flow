@@ -38,14 +38,14 @@ export const AddCardForm = ({boardId, cardListId}: {boardId: number; cardListId:
               <button
                 onClick={create}
                 disabled={isPending || !name.trim() || !description.trim()}
-                className="bg-blue-600 text-white px-3 py-1.5 rounded-sm text-sm disabled:opacity-50"
+                className="bg-blue-600 text-white px-3 py-1.5 rounded-sm text-sm disabled:opacity-50 cursor-pointer"
               >
                 Add
               </button>
 
               <button
                 onClick={() => setIsAdding(false)}
-                className="text-sm text-gray-600"
+                className="text-sm text-gray-600 cursor-pointer"
               >
                 Cancel
               </button>
@@ -56,7 +56,7 @@ export const AddCardForm = ({boardId, cardListId}: {boardId: number; cardListId:
         <div className="flex justify-center">
           <button
             onClick={() => setIsAdding(true)}
-            className="w-10 h-10 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-sm m-2"
+            className="w-10 h-10 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-sm m-2 cursor-pointer"
           >
             <AddIcon fontSize="small" />
           </button>
