@@ -3,6 +3,7 @@ import type { BoardData } from "../../modules/board/types.ts"
 import type { Card } from '../../modules/card/types.ts'
 import { QUERY_KEYS } from '../queryKeys'
 import { createCard, deleteCard, moveCard, updateCard } from './apis'
+import type { CardListData } from '../../modules/cardList/types.ts'
 
 export const useUpdateCard = () => {
   const queryClient = useQueryClient()
@@ -21,14 +22,14 @@ export const useUpdateCard = () => {
 
           return {
             ...board,
-            cardLists: board.cardLists.map((cardList: any) => {
+            cardLists: board.cardLists.map((cardList: CardListData) => {
               if (cardList.id !== updatedCard.cardListId) {
                 return cardList
               }
 
               return {
                 ...cardList,
-                cards: cardList.cards.map((card: any) =>
+                cards: cardList.cards.map((card: Card) =>
                   card.id === updatedCard.id
                     ? updatedCard
                     : card

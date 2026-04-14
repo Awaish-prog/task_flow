@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import type { Board as BoardType } from "./modules/board/types";
 
 export const BOARD_ID_KEY = 'board_id';
 
@@ -58,7 +59,7 @@ function App() {
             <MenuItem value="" disabled>
               Select Board
             </MenuItem>
-              {boards.map((board: any) => (
+              {boards.map((board: BoardType) => (
                 <MenuItem key={board.id} value={board.id}>
                   {board.boardName}
                 </MenuItem>

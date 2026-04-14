@@ -20,7 +20,7 @@ export const useUpdateCardList = () => {
 
           return {
             ...board,
-            cardLists: board.cardLists.map((cardList: any) =>
+            cardLists: board.cardLists.map((cardList: CardListData) =>
               cardList.id === updatedCardList.id
                 ? updatedCardList
                 : cardList
