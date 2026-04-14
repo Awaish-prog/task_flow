@@ -1,5 +1,13 @@
 # Task Flow – Full Stack Assessment
 
+## Run project
+
+```bash
+git clone https://github.com/Awaish-prog/task_flow.git
+cd task_flow
+docker compose up
+```
+
 ## Key Design Decisions
 
 ### 1. Ordering Algorithm (String-Based)
