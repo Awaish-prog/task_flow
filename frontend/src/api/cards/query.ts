@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import type { BoardData, Card } from '../../types/Types'
+import type { BoardData } from "../../modules/board/types.ts"
+import type { Card } from '../../modules/card/types.ts'
 import { QUERY_KEYS } from '../queryKeys'
 import { createCard, deleteCard, moveCard, updateCard } from './apis'
 
@@ -133,18 +134,17 @@ export const useMoveCard = () => {
   })
 }
 
-type CreateCardPayload = {
-  name: string;
-  description: string;
-  cardListId: number;
-  boardId: number;
-};
 
 export const useCreateCard = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: CreateCardPayload) => await createCard(data.cardListId, data.name, data.description),
+    mutationFn: async (data: {
+      name: string;
+      description: string;
+      cardListId: number;
+      boardId: number;
+    }) => await createCard(data.cardListId, data.name, data.description),
 
     onSuccess: (newCard, variables) => {
       queryClient.setQueryData<BoardData>(

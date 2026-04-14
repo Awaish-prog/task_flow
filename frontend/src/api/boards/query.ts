@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createBoard, deleteBoard, getBoardById, getBoards, updateBoard } from './apis'
 import { QUERY_KEYS } from '../queryKeys'
-import type { Board, BoardData } from '../../types/Types'
+import type { Board, BoardData } from '../../modules/board/types.ts'
 
 export const useBoard = (boardId: number) => {
   return useQuery({

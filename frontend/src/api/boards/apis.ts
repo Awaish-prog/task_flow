@@ -1,7 +1,8 @@
-import type { Board, BoardData } from "../../types/Types";
+import type { Board, BoardData } from "../../modules/board/types.ts";
 import apiClient from "../apiClient";
+import { API_ROUTES } from "../apiUrl.ts";
 
-const boardUrl: string = '/boards';
+const boardUrl: string = API_ROUTES.boards;
 
 export const getBoards = (): Promise<Board[]> => {
   return apiClient.get(boardUrl);

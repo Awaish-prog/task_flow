@@ -1,7 +1,8 @@
-import type { CardList, CardListData } from "../../types/Types";
+import type { CardList, CardListData } from "../../modules/cardList/types.ts";
 import apiClient from "../apiClient";
+import { API_ROUTES } from "../apiUrl.ts";
 
-const cardListUrl: string = '/card_lists';
+const cardListUrl: string = API_ROUTES.cardLists;
 
 export const getCardLists = (): Promise<CardList[]> => {
   return apiClient.get(cardListUrl);

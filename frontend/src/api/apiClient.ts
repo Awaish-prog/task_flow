@@ -1,12 +1,12 @@
 import axios from "axios";
-import { apiUrl } from "./apiUrl";
+import { getBaseApiUrl } from "./apiUrl";
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
 import { API_CONFIG } from "./config";
 import { showErrorToast } from "../ToastManager";
 
 const apiClient = axios.create({
-  baseURL: apiUrl(),
+  baseURL: getBaseApiUrl(),
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
