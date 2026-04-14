@@ -37,8 +37,10 @@ class CardOrderService(CardService):
             
         prev_key = prev_card.order_key if is_prev_in_same_list else None
         next_key = next_card.order_key if is_next_in_same_list else None
+        
+        are_keys_in_order = prev_key and next_key and prev_key < next_key
             
-        card.order_key = generate_jittered_key_between(prev_key, next_key)
+        card.order_key = generate_jittered_key_between(prev_key, next_key) if are_keys_in_order else generate_jittered_key_between(next_key, prev_key)
         card.card_list_id = obj_in.card_list_id
         await db.flush()
         return card
