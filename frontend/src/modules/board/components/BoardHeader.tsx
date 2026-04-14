@@ -1,6 +1,6 @@
 import EditableField from "../../../shared/ui/EditableField.tsx";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { useUpdateBoard, useDeleteBoard } from "../../../api/boards/query.ts";
+import { useUpdateBoard, useDeleteBoard } from "../api/query.ts";
 
 export const BoardHeader = ({ id, name, onDeleted }: { id: number; name: string; onDeleted: (id: number) => void; }) => {
   const update = useUpdateBoard();

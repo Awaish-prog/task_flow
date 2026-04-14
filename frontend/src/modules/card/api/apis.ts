@@ -1,6 +1,6 @@
-import type { Card } from "../../modules/card/types.ts";
-import apiClient from "../apiClient";
-import { API_ROUTES } from "../apiUrl.ts";
+import type { Card } from "../types.ts";
+import apiClient from "../../../api/apiClient.ts";
+import { API_ROUTES } from "../../../api/apiUrl.ts";
 
 export const getCards = (): Promise<Card[]> => {
   return apiClient.get(API_ROUTES.cards);

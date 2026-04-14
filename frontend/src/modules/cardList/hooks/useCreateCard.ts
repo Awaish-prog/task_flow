@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useCreateCard } from "../../../api/cards/query.ts";
+import { useCreateCard } from "../../card/api/query.ts";
 
 export const useCreateCardHandler = (boardId: number, cardListId: number) => {
   const [isAdding, setIsAdding] = useState(false);

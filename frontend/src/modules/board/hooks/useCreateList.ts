@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useCreateCardList } from "../../../api/cardLists/query.ts";
+import { useCreateCardList } from "../../cardList/api/query.ts";
 
 export const useCreateList = (boardId: number) => {
   const [isAdding, setIsAdding] = useState(false);

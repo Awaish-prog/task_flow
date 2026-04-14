@@ -1,4 +1,4 @@
-import { useUpdateCard, useDeleteCard } from "../../../api/cards/query.ts";
+import { useUpdateCard, useDeleteCard } from "../api/query.ts";
 
 export const useCardActions = (boardId: number, cardId: number, initialName: string, initialDescription: string) => {
   const update = useUpdateCard();

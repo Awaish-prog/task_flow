@@ -1,5 +1,5 @@
 import { DragDropContext } from "@hello-pangea/dnd";
-import { useBoard } from "../../api/boards/query";
+import { useBoard } from "./api/query.ts";
 import BoardLoader from "./BoardLoader";
 import { BoardHeader } from "./components/BoardHeader.tsx";
 import { AddListCard } from "./components/AddListCard.tsx";

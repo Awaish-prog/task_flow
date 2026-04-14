@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { useBoards } from "../../api/boards/query.ts";
+import { useBoards } from "../board/api/query.ts";
 
 import { BoardSelector } from "./components/BoardSelector";
 import { CreateBoardDialog } from "./components/CreateBoardDialog";

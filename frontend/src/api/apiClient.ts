@@ -3,7 +3,7 @@ import { getBaseApiUrl } from "./apiUrl";
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
 import { API_CONFIG } from "./config";
-import { showErrorToast } from "../ToastManager";
+import { showErrorToast } from "../shared/ui/ToastManager";
 
 const apiClient = axios.create({
   baseURL: getBaseApiUrl(),

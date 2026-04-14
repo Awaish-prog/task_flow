@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { useCreateBoard } from "../../../api/boards/query.ts";
+import { useCreateBoard } from "../../board/api/query.ts";
 
 type Props = {
   open: boolean;

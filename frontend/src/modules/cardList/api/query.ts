@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createCardList, deleteCardList, updateCardList } from './apis'
-import type { CardList, CardListData } from '../../modules/cardList/types.ts'
-import type { BoardData } from '../../modules/board/types.ts'
-import { QUERY_KEYS } from '../queryKeys'
+import type { CardList, CardListData } from '../types.ts'
+import type { BoardData } from '../../board/types.ts'
+import { QUERY_KEYS } from '../../../api/queryKeys.ts'
 
 
 export const useUpdateCardList = () => {

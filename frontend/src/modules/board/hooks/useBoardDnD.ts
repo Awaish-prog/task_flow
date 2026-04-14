@@ -1,6 +1,6 @@
 import type { DropResult } from "@hello-pangea/dnd";
 import type { CardListData } from "../../../modules/cardList/types.ts";
-import { useMoveCard } from "../../../api/cards/query.ts";
+import { useMoveCard } from "../../card/api/query.ts";
 
 export const useBoardDnD = (boardId: number, cardLists: CardListData[]) => {
   const moveCard = useMoveCard();

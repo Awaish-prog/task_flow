@@ -1,6 +1,6 @@
 import EditableField from "../../../shared/ui/EditableField.tsx";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { useUpdateCardList, useDeleteCardList } from "../../../api/cardLists/query.ts";
+import { useUpdateCardList, useDeleteCardList } from "../api/query.ts";
 
 export const CardListHeader = ({id, name, boardId}: {id: number; name: string; boardId: number;
 }) => {
