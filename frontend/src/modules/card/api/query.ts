@@ -125,13 +125,7 @@ export const useMoveCard = () => {
           context.initialBoard
         )
       }
-    },
-
-    onSettled: (_data, _error, variables) => {
-      // queryClient.invalidateQueries({
-      //   queryKey: [ QUERY_KEYS.BOARD, variables.boardId,]
-      // })
-    },
+    }
   })
 }
 
