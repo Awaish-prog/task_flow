@@ -1,6 +1,6 @@
-import EditableField from "./ui/EditableField";
-import type { Card as CardType } from "../types/Types";
-import { useDeleteCard, useUpdateCard } from "../api/cards/query";
+import EditableField from "../../shared/ui/EditableField.tsx";
+import type { Card as CardType } from "../card/types.ts";
+import { useDeleteCard, useUpdateCard } from "../../api/cards/query";
 import { Draggable } from "@hello-pangea/dnd";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 

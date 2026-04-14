@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createBoard, deleteBoard, getBoardById, getBoards, updateBoard } from './apis'
 import { QUERY_KEYS } from '../queryKeys'
 import type { Board, BoardData } from '../../types/Types'
-import { BOARD_ID_KEY } from '../../App'
 
 export const useBoard = (boardId: number) => {
   return useQuery({
@@ -78,7 +77,6 @@ export const useDeleteBoard = () => {
     mutationFn: deleteBoard,
 
     onSuccess: (_data, boardId) => {
-      localStorage.removeItem(BOARD_ID_KEY);
       queryClient.setQueryData([QUERY_KEYS.BOARDS], (boards: Board[]) => {
         return boards?.filter(board => board.id !== boardId);
       });

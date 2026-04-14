@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Board from "./components/Board";
+import Board from "./modules/board/Board";
 import { useBoards, useCreateBoard } from "./api/boards/query";
 import { Toaster } from "react-hot-toast";
 

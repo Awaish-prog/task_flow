@@ -117,7 +117,6 @@ export const useMoveCard = () => {
     },
 
     onError: (_err, variables, context) => {
-      console.log(`Error handle board: ${JSON.stringify(context)}`)
       if (context?.initialBoard) {
         queryClient.setQueryData(
           [QUERY_KEYS.BOARD, variables.boardId],

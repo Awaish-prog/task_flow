@@ -1,17 +1,17 @@
 import { useState } from "react";
-import EditableField from "./ui/EditableField";
-import { useBoard, useDeleteBoard, useUpdateBoard } from "../api/boards/query";
-import { useCreateCardList } from "../api/cardLists/query";
+import EditableField from "../../shared/ui/EditableField.tsx";
+import { useBoard, useDeleteBoard, useUpdateBoard } from "../../api/boards/query";
+import { useCreateCardList } from "../../api/cardLists/query";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddIcon from "@mui/icons-material/Add";
-import type { CardListData } from "../types/Types";
+import type { CardListData } from "../cardList/types.ts"
 
 import {
   DragDropContext,
   type DropResult,
 } from "@hello-pangea/dnd";
-import { useMoveCard } from "../api/cards/query";
-import CardList from "./CardList";
+import { useMoveCard } from "../../api/cards/query";
+import CardList from "../cardList/CardList";
 import BoardLoader from "./BoardLoader";
 
 export default function Board({ boardId, setDefaultBoard }: { boardId: number, setDefaultBoard: (deletedBoardId: number) => void }) {
@@ -47,7 +47,7 @@ export default function Board({ boardId, setDefaultBoard }: { boardId: number, s
     const sourceCardListId: number = Number(result.source?.droppableId)
     const destinationListId: number = Number(result.destination?.droppableId)
 
-    const destinationCardList: CardListData | undefined = board.cardLists.find(cardList => cardList.id === destinationListId)
+    const destinationCardList: CardListData | undefined = board.cardLists.find((cardList: CardListData) => cardList.id === destinationListId)
 
     if (destinationCardList === undefined || result.destination === null || result.destination.index === null) {
       return;
@@ -98,7 +98,7 @@ export default function Board({ boardId, setDefaultBoard }: { boardId: number, s
         </div>
 
         <div className="flex gap-3 overflow-x-auto pb-4">
-          {board.cardLists.map((cardList, index) => (
+          {board.cardLists.map((cardList: CardListData, index: number) => (
             <CardList
               key={index}
               id={cardList.id}

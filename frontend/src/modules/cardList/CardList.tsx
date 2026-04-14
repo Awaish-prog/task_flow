@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Card from "./Card";
-import EditableField from "./ui/EditableField";
-import type { CardListData } from "../types/Types";
-import { useDeleteCardList, useUpdateCardList } from "../api/cardLists/query";
-import { useCreateCard } from "../api/cards/query";
+import Card from "../card/Card";
+import EditableField from "../../shared/ui/EditableField.tsx";
+import type { CardListData } from "../cardList/types.ts";
+import { useDeleteCardList, useUpdateCardList } from "../../api/cardLists/query";
+import { useCreateCard } from "../../api/cards/query";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Droppable } from "@hello-pangea/dnd";
