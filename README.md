@@ -1,7 +1,5 @@
 # Task Flow – Full Stack Assessment
 
-Task Flow is a Kanban-style project management tool built as part of a full-stack system design assessment. The focus of this project is on backend correctness, performance, and architecture, along with a responsive and smooth frontend experience.
-
 ## Key Design Decisions
 
 ### 1. Ordering Algorithm (String-Based)
@@ -11,8 +9,11 @@ To support efficient reordering of cards, a **string-based ordering algorithm** 
 #### Why not integers?
 Integer-based ordering requires shifting multiple records when reordering, which is inefficient and does not scale. For example, inserting a card at position 1 in a list of 1000 cards would require updating all 1000 records.
 
+#### Why not floats?
+Floats seem like a natural fit — inserting between two cards at positions `1.0` and `2.0` just means assigning `1.5`, then `1.25`, `1.375`, and so on. No bulk updates needed. However, this approach has a fundamental precision ceiling: IEEE 754 double-precision floats have a fixed number of significant bits, so after enough insertions in the same gap the midpoint calculation collapses — two adjacent cards end up with identical float values, making stable ordering impossible without a full reindex.
+
 #### Why strings?
-String keys can always have a new value generated **between** any two existing keys lexicographically, without touching any other record. This makes every reorder operation an `O(1)` update — only the moved card is written.
+String keys sidestep the precision problem entirely. The lexicographic space between any two strings is effectively unbounded — a new key can always be generated between them without ever exhausting the available space. This makes every reorder operation a true `O(1)` write with no risk of key exhaustion over time.
 
 #### Solution
 Each card has an `order_key` (string). When moving a card:
