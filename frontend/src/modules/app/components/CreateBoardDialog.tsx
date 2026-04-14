@@ -16,7 +16,7 @@ type Props = {
 export const CreateBoardDialog = ({ open, onClose, onSuccess }: Props) => {
   const [name, setName] = useState("");
   const mutation = useCreateBoard();
-7
+
   const handleCreate = async () => {
     const board = await mutation.mutateAsync(name);
     onSuccess(board.id);

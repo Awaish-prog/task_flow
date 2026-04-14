@@ -12,7 +12,7 @@ export const useBoardDnD = (boardId: number, cardLists: CardListData[]) => {
     const destinationListId = Number(result.destination.droppableId);
     const destinationIndex = result.destination.index;
 
-    const destinationList = cardLists.find((l) => l.id === destinationListId);
+    const destinationList = cardLists.find((cardList) => cardList.id === destinationListId);
     if (!destinationList) return;
 
     const prevCardId = destinationIndex > 0

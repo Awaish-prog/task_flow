@@ -53,7 +53,9 @@ function App() {
           handleBoardDelete={handleBoardDelete}
         />
       ) : (
-        <h2>Select a board</h2>
+        <div className="w-full h-[50vh] flex justify-center items-center">
+          <h2>Select a board</h2>
+        </div>
       )}
     </div>
   );

@@ -3,15 +3,15 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useUpdateBoard, useDeleteBoard } from "../api/query.ts";
 
 export const BoardHeader = ({ id, name, onDeleted }: { id: number; name: string; onDeleted: (id: number) => void; }) => {
-  const update = useUpdateBoard();
-  const del = useDeleteBoard();
+  const updateBoard = useUpdateBoard();
+  const deleteBoard = useDeleteBoard();
 
   const handleUpdate = (value: string) => {
-    update.mutate({ id, name: value });
+    updateBoard.mutate({ id, name: value });
   };
 
   const handleDelete = async () => {
-    await del.mutateAsync(id);
+    await deleteBoard.mutateAsync(id);
     onDeleted(id);
   };
 

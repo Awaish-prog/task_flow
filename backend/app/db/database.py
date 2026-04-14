@@ -3,9 +3,23 @@ from sqlalchemy.orm import sessionmaker
 from typing import Annotated
 from fastapi import Depends
 import os
+from dotenv import load_dotenv
 
-# DATABASE_URL = "postgresql+asyncpg://user:password@db:5432/app_db"
-DATABASE_URL = "postgresql+asyncpg://user:password@localhost:5432/app_db"
+load_dotenv() 
+
+
+def get_env(key: str, default: str) -> str:
+    return os.getenv(key, default)
+
+USER_NAME = get_env("USER_NAME", "user")
+PASSWORD = get_env("PASSWORD", "password")
+HOST = get_env("DATABASE", "localhost")
+PORT = get_env("PORT", "5432")
+DB_NAME = get_env("DATABASE_NAME", "app_db")
+
+DATABASE_URL = (
+    f"postgresql+asyncpg://{USER_NAME}:{PASSWORD}@{HOST}:{PORT}/{DB_NAME}"
+)
 
 engine = create_async_engine(
     DATABASE_URL,
@@ -29,5 +43,6 @@ async def get_db():
         except Exception:
             await session.rollback()
             raise
-        
+
+
 Database = Annotated[AsyncSession, Depends(get_db)]
