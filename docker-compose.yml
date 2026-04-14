@@ -2,7 +2,10 @@ version: "3.9"
 
 services:
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
     container_name: react_frontend
     ports:
       - "3000:80"
@@ -17,7 +20,11 @@ services:
     ports:
     - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/app_db
+      - USER_NAME=user
+      - PASSWORD=password
+      - DATABASE=db
+      - PORT=5432
+      - DATABASE_NAME=app_db
     depends_on:
       - db
     networks:

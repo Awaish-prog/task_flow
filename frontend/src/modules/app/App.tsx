@@ -7,6 +7,7 @@ import { CreateBoardDialog } from "./components/CreateBoardDialog";
 import { EmptyState } from "./components/EmptyState";
 import { useSelectedBoard } from "./hooks/useSelectedBoard";
 import Board from "../board/Board.tsx";
+import BoardLoader from "../board/BoardLoader.tsx";
 
 function App() {
   const { data: boards = [], isLoading } = useBoards();
@@ -53,9 +54,7 @@ function App() {
           handleBoardDelete={handleBoardDelete}
         />
       ) : (
-        <div className="w-full h-[50vh] flex justify-center items-center">
-          <h2>Select a board</h2>
-        </div>
+        <BoardLoader />
       )}
     </div>
   );
